@@ -4,8 +4,14 @@ import java.util.List;
 public class SubredditRepository {
     private List<Subreddit> subredditList;
 
-    public SubredditRepository() {
+    private static SubredditRepository subRepository = new SubredditRepository();
+
+    private SubredditRepository() {
         subredditList = new ArrayList<>();
+    }
+
+    public static SubredditRepository getSubredditRepository() {
+        return subRepository;
     }
 
     public void AddSubreddit(Subreddit sub) {
