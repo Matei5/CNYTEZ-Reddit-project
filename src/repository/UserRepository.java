@@ -1,15 +1,24 @@
-package src.repository;
+package repository;
 
-import src.model.User;
-
+import model.User;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository {
+    private static UserRepository instance;
+
     private List<User> users;
 
-    public UserRepository() {
+    private UserRepository() {
         users = new ArrayList<>();
+    }
+
+    public static UserRepository getInstance() {
+        if (instance == null) {
+            instance = new UserRepository();
+        }
+
+        return instance;
     }
 
     public void save(User user) {
@@ -36,8 +45,18 @@ public class UserRepository {
         return null;
     }
 
+    public User findByEmail(String email) {
+        for (User user : users) {
+            if (user.getEmail().equals(email)) {
+                return user;
+            }
+        }
+
+        return null;
+    }
+
     public List<User> findAll() {
-        return users;
+        return new ArrayList<>(users);
     }
 
     public void deleteById(int id) {
