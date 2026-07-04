@@ -14,7 +14,7 @@ public class SubredditRepository {
         return subRepository;
     }
 
-    public void AddSubreddit(Subreddit sub) {
+    public void addSubreddit(Subreddit sub) {
         subredditList.add(sub);
     }
 
