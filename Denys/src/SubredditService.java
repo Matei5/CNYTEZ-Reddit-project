@@ -64,10 +64,10 @@ public class SubredditService {
         if (sub == null)
             return false;
 
-        if (sub.getUserIdList().contains(loggedUser.getId()))
+        boolean hasJoined = sub.addFollower(loggedUser.getId());
+        if (!hasJoined)
             return false;
 
-        sub.addFollower(loggedUser.getId());
         return true;
     }
 
@@ -80,13 +80,12 @@ public class SubredditService {
         if (sub == null)
             return false;
 
-        if (!sub.getUserIdList().contains(loggedUser.getId()))
-            return false;
-
         if (loggedUser.getId() == sub.getOwnerId()) // Owner needs to change subreddit ownership before leaving
             return false;
 
-        sub.removeFollower(loggedUser.getId());
+        boolean hasLeft = sub.removeFollower(loggedUser.getId());
+        if (!hasLeft)
+            return false;
         return true;
     }
 

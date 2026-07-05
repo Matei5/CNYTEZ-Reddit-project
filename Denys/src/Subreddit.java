@@ -67,14 +67,20 @@ public class Subreddit {
         this.ownerId = ownerId;
     }
 
-    public void addFollower(int userId) {
-        if (!userIdList.contains(userId))
+    public boolean addFollower(int userId) {
+        if (!userIdList.contains(userId)) {
             this.userIdList.add(userId);
+            return true;
+        }
+        return false;
     }
 
-    public void removeFollower(int userId) {
+    public boolean removeFollower(int userId) {
         int followerIndex = this.userIdList.indexOf(userId);
-        if (followerIndex != -1)
+        if (followerIndex != -1) {
             userIdList.remove(followerIndex);
+            return true;
+        }
+        return false;
     }
 }
