@@ -1,6 +1,4 @@
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +9,6 @@ public class Post {
     private LocalDateTime creationDate;
 
     private int subredditId, ownerId;
-    private List<Integer> commentIdList;
 
     public enum VoteType {
         UPVOTE,
@@ -29,7 +26,6 @@ public class Post {
         this.subredditId = subredditId;
         this.ownerId = ownerId;
 
-        commentIdList = new ArrayList<>();
         userIdVotesMap = new HashMap<>();
     }
 
@@ -71,10 +67,6 @@ public class Post {
 
     public int getOwnerId() {
         return ownerId;
-    }
-
-    public List<Integer> getCommentIdList() {
-        return commentIdList;
     }
 
     public Map<Integer, VoteType> getUserIdVotesMap() {
