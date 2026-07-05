@@ -25,6 +25,17 @@ public class Menu {
     }
 
     public void start() {
+        boolean running = true;
+
+        while(running){
+            if (authService.isLoggedIn()) {
+                running = showUserMenu();
+            } else {
+                running = showGuestMenu();
+            }
+        }
+
+        System.out.println("Goodbye! You're always welcome back!");
     }
 
     private void showGuestMenu() {
