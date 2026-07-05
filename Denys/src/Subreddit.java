@@ -10,7 +10,6 @@ public class Subreddit {
     private int ownerId;
     private LocalDateTime creationDate;
 
-    private List<Integer> postIdList;
     private List<Integer> userIdList;
 
     public Subreddit(int id, String name, String photo, String banner, int ownerId, LocalDateTime creationDate) {
@@ -21,7 +20,6 @@ public class Subreddit {
         this.ownerId = ownerId;
         this.creationDate = creationDate;
 
-        postIdList = new ArrayList<>();
         userIdList = new ArrayList<>();
     }
 
@@ -49,10 +47,6 @@ public class Subreddit {
         return creationDate;
     }
 
-    public List<Integer> getPostIdList() {
-        return postIdList;
-    }
-
     public List<Integer> getUserIdList() {
         return userIdList;
     }
@@ -71,5 +65,16 @@ public class Subreddit {
 
     public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public void addFollower(int userId) {
+        if (!userIdList.contains(userId))
+            this.userIdList.add(userId);
+    }
+
+    public void removeFollower(int userId) {
+        int followerIndex = this.userIdList.indexOf(userId);
+        if (followerIndex != -1)
+            userIdList.remove(followerIndex);
     }
 }
