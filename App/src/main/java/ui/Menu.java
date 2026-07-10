@@ -25,44 +25,14 @@ public class Menu {
     private final ConsoleReader consoleReader;
 
     public Menu() {
-        consolePrinter = ConsolePrinter.getInstance();
-        consoleReader = new ConsoleReader(consolePrinter);
+        authController = AuthController.getInstance();
+        postController = PostController.getInstance();
+        commentController = CommentController.getInstance();
+        subredditController = SubredditController.getInstance();
+        
         authService = AuthService.getInstance();
-
-        authController = new AuthController(
-                consoleReader,
-                consolePrinter,
-                authService
-        );
-
-        postController = new PostController(
-                consoleReader,
-                consolePrinter,
-                PostService.getInstance(),
-                PostRepository.getInstance(),
-                UserRepository.getInstance(),
-                SubredditRepository.getSubredditRepository(),
-                authService
-        );
-
-        commentController = new CommentController(
-                consoleReader,
-                consolePrinter,
-                CommentService.getInstance(),
-                CommentRepository.getInstance(),
-                PostRepository.getInstance(),
-                UserRepository.getInstance(),
-                authService
-        );
-
-        subredditController = new SubredditController(
-                consoleReader,
-                consolePrinter,
-                SubredditService.getSubredditService(),
-                SubredditRepository.getSubredditRepository(),
-                UserRepository.getInstance(),
-                authService
-        );
+        consolePrinter = ConsolePrinter.getInstance();
+        consoleReader = ConsoleReader.getInstance();
     }
 
     public void start() {
