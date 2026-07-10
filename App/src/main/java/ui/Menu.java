@@ -4,14 +4,8 @@ import controller.AuthController;
 import controller.CommentController;
 import controller.PostController;
 import controller.SubredditController;
-import repository.CommentRepository;
-import repository.PostRepository;
-import repository.SubredditRepository;
-import repository.UserRepository;
+
 import service.AuthService;
-import service.CommentService;
-import service.PostService;
-import service.SubredditService;
 
 public class Menu {
 
