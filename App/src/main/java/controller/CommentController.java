@@ -14,6 +14,8 @@ import java.util.List;
 
 public class CommentController {
 
+    private static CommentController instance;
+
     private final ConsoleReader consoleReader;
     private final ConsolePrinter consolePrinter;
     private final CommentService commentService;
@@ -22,22 +24,21 @@ public class CommentController {
     private final UserRepository userRepository;
     private final AuthService authService;
 
-    public CommentController(
-            ConsoleReader consoleReader,
-            ConsolePrinter consolePrinter,
-            CommentService commentService,
-            CommentRepository commentRepository,
-            PostRepository postRepository,
-            UserRepository userRepository,
-            AuthService authService
-    ) {
-        this.consoleReader = consoleReader;
-        this.consolePrinter = consolePrinter;
-        this.commentService = commentService;
-        this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
-        this.userRepository = userRepository;
-        this.authService = authService;
+    private CommentController() {
+        this.consoleReader = ConsoleReader.getInstance();
+        this.consolePrinter = ConsolePrinter.getInstance();
+        this.commentService = CommentService.getInstance();
+        this.commentRepository = CommentRepository.getInstance();
+        this.postRepository = PostRepository.getInstance();
+        this.userRepository = UserRepository.getInstance();
+        this.authService = AuthService.getInstance();
+    }
+
+    public static CommentController getInstance() {
+        if (instance == null) {
+            instance = new CommentController();
+        }
+        return instance;
     }
 
     public void createComment() {
