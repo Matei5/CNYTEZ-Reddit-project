@@ -47,7 +47,7 @@ public class CommentController {
         int postId = consoleReader.readInt("Parent post id: ");
 
         if (postRepository.findById(postId) == null) {
-            consolePrinter.printMessage("Comment not found.");
+            consolePrinter.printMessage("Post not found.");
             return;
         }
 
@@ -145,6 +145,41 @@ public class CommentController {
             consolePrinter.printMessage("Comment deleted.");
         } else {
             consolePrinter.printMessage("Could not delete comment.");
+        }
+    }
+
+    public void voteComment() {
+        consolePrinter.printHeader("Vote comment");
+
+        int commentId = consoleReader.readInt("Comment id: ");
+
+        if (commentRepository.findById(commentId) == null) {
+            consolePrinter.printMessage("Comment not found.");
+            return;
+        }
+
+        consolePrinter.printVoteMenu();
+        String choice = consoleReader.readText();
+        Comment.VoteType voteType;
+
+        switch (choice) {
+            case "1" -> voteType = Comment.VoteType.UPVOTE;
+            case "2" -> voteType = Comment.VoteType.DOWNVOTE;
+            case "0" -> {
+                return;
+            }
+            default -> {
+                consolePrinter.printInvalidChoiceMessage();
+                return;
+            }
+        }
+
+        boolean success = commentService.voteComment(commentId, voteType);
+
+        if (success) {
+            consolePrinter.printMessage("Vote saved. Repeating the same vote removes it.");
+        } else {
+            consolePrinter.printMessage("Could not save vote.");
         }
     }
 

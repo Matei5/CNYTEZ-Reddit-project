@@ -12,7 +12,6 @@ import ui.ConsolePrinter;
 import ui.ConsoleReader;
 
 import java.util.List;
-import java.util.Map;
 
 public class PostController {
 
@@ -176,11 +175,14 @@ public class PostController {
             String username = owner == null ? "unknown" : owner.getUsername();
             String subredditName = subreddit == null ? "unknown" : subreddit.getName();
 
-            int upvotes = getPostUpvotes(post);
-            int downvotes = getPostDownvotes(post);
-            int score = upvotes - downvotes;
-
-            consolePrinter.printPost(post, username, subredditName, score, upvotes, downvotes);
+            consolePrinter.printPost(
+                    post,
+                    username,
+                    subredditName,
+                    post.getScore(),
+                    post.getUpvotesCount(),
+                    post.getDownvotesCount()
+            );
         }
     }
 
@@ -189,23 +191,4 @@ public class PostController {
         return currentUser != null && currentUser.getId() == ownerId;
     }
 
-    private int getPostUpvotes(Post post) {
-        int count = 0;
-        for (Map.Entry<Integer, Post.VoteType> entry : post.getUserIdVotesMap().entrySet()) {
-            if (entry.getValue() == Post.VoteType.UPVOTE) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    private int getPostDownvotes(Post post) {
-        int count = 0;
-        for (Map.Entry<Integer, Post.VoteType> entry : post.getUserIdVotesMap().entrySet()) {
-            if (entry.getValue() == Post.VoteType.DOWNVOTE) {
-                count++;
-            }
-        }
-        return count;
-    }
 }

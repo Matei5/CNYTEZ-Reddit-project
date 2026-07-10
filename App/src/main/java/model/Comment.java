@@ -114,12 +114,46 @@ public class Comment {
         this.childCommentIDs.remove(childCommentID);
     }
 
-    public void addUserIdVote(int userID, VoteType voteType) {
-        this.userIdVoteMap.put(userID, voteType);
+    public void vote(int userID, VoteType voteType) {
+        if (userIdVoteMap.containsKey(userID)) {
+            VoteType existingVote = userIdVoteMap.get(userID);
+
+            if (existingVote == voteType) {
+                userIdVoteMap.remove(userID);
+            } else {
+                userIdVoteMap.put(userID, voteType);
+            }
+        } else {
+            userIdVoteMap.put(userID, voteType);
+        }
     }
 
-    public void removeUserIdVote(int userID, VoteType voteType) {
-        this.userIdVoteMap.remove(userID, voteType);
+    public int getUpvotesCount() {
+        int count = 0;
+
+        for (VoteType voteType : userIdVoteMap.values()) {
+            if (voteType == VoteType.UPVOTE) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public int getDownvotesCount() {
+        int count = 0;
+
+        for (VoteType voteType : userIdVoteMap.values()) {
+            if (voteType == VoteType.DOWNVOTE) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public int getScore() {
+        return getUpvotesCount() - getDownvotesCount();
     }
 
 }
