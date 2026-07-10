@@ -13,6 +13,8 @@ import java.util.List;
 
 public class SubredditController {
 
+    private static SubredditController instance;
+
     private final ConsoleReader consoleReader;
     private final ConsolePrinter consolePrinter;
     private final SubredditService subredditService;
@@ -20,20 +22,20 @@ public class SubredditController {
     private final UserRepository userRepository;
     private final AuthService authService;
 
-    public SubredditController(
-            ConsoleReader consoleReader,
-            ConsolePrinter consolePrinter,
-            SubredditService subredditService,
-            SubredditRepository subredditRepository,
-            UserRepository userRepository,
-            AuthService authService
-    ) {
-        this.consoleReader = consoleReader;
-        this.consolePrinter = consolePrinter;
-        this.subredditService = subredditService;
-        this.subredditRepository = subredditRepository;
-        this.userRepository = userRepository;
-        this.authService = authService;
+    private SubredditController() {
+        this.consoleReader = ConsoleReader.getInstance();
+        this.consolePrinter = ConsolePrinter.getInstance();
+        this.subredditService = SubredditService.getSubredditService();
+        this.subredditRepository = SubredditRepository.getSubredditRepository();
+        this.userRepository = UserRepository.getInstance();
+        this.authService = AuthService.getInstance();
+    }
+
+    public static SubredditController getInstance() {
+        if (instance == null) {
+            instance = new SubredditController();
+        }
+        return instance;
     }
 
     public void listSubreddits() {
