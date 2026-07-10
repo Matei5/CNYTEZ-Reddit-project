@@ -3,6 +3,7 @@ package ui;
 import model.Comment;
 import model.Post;
 import model.Subreddit;
+import model.User;
 
 import java.util.List;
 
@@ -148,5 +149,14 @@ public class ConsolePrinter {
         if (subreddits.isEmpty()) {
             printMessage("No subreddits found.");
         }
+    }
+
+    public void printUserProfile(User user, int karma) {
+        System.out.printf("\nName: %s\n" +
+                "Username: %s\n" +
+                "Email: %s\n" +
+                "Profile Photo: %s\n" +
+                "Karma: %d\n",
+                user.getName(), user.getUsername(), user.getEmail(), user.getProfilePhoto(), karma);
     }
 }
