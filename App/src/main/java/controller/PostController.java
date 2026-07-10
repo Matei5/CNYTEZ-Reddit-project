@@ -1,4 +1,210 @@
-package src.main.java.controller;
+package controller;
+
+import model.Post;
+import model.Subreddit;
+import model.User;
+import repository.PostRepository;
+import repository.SubredditRepository;
+import repository.UserRepository;
+import service.AuthService;
+import service.PostService;
+import ui.ConsolePrinter;
+import ui.ConsoleReader;
+
+import java.util.List;
+import java.util.Map;
 
 public class PostController {
+
+    private final ConsoleReader consoleReader;
+    private final ConsolePrinter consolePrinter;
+    private final PostService postService;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final SubredditRepository subredditRepository;
+    private final AuthService authService;
+
+    public PostController(
+            ConsoleReader consoleReader,
+            ConsolePrinter consolePrinter,
+            PostService postService,
+            PostRepository postRepository,
+            UserRepository userRepository,
+            SubredditRepository subredditRepository,
+            AuthService authService
+    ) {
+        this.consoleReader = consoleReader;
+        this.consolePrinter = consolePrinter;
+        this.postService = postService;
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.subredditRepository = subredditRepository;
+        this.authService = authService;
+    }
+
+    public void createPost() {
+        consolePrinter.printHeader("Create post");
+
+        int subredditId = consoleReader.readInt("Subreddit id: ");
+
+        Subreddit subreddit = subredditRepository.getSubredditById(subredditId);
+
+        if (subreddit == null) {
+            consolePrinter.printMessage("Subreddit does not exist.");
+            return;
+        }
+
+        String title = consoleReader.readText("Title: ");
+        String text = consoleReader.readText("Text: ");
+        String image = consoleReader.readText("Image path: ");
+
+        postService.createPost(subredditId, title, text, image);
+        consolePrinter.printMessage("Post created.");
+    }
+
+    public void listAllPosts() {
+        consolePrinter.printHeader("All posts");
+        printPosts(postRepository.getAllPosts());
+    }
+
+    public void listMyPosts() {
+        User user = authService.getLoggedInUser();
+        consolePrinter.printHeader("My posts");
+        printPosts(postRepository.getPostsByUser(user.getId()));
+    }
+
+    public void editPost() {
+        consolePrinter.printHeader("Edit post");
+
+        int postId = consoleReader.readInt("Post id: ");
+        Post post = postRepository.findById(postId);
+
+        if (post == null) {
+            consolePrinter.printMessage("Post not found.");
+            return;
+        }
+
+        if (!isCurrentUserOwner(post.getOwnerId())) {
+            consolePrinter.printMessage("You can only edit your own posts.");
+            return;
+        }
+
+        String title = consoleReader.readText("New title: ");
+        String text = consoleReader.readText("New text: ");
+        String image = consoleReader.readText("New image path: ");
+
+        boolean success = postService.editPost(postId, title, text, image);
+
+        if (success) {
+            consolePrinter.printMessage("Post edited.");
+        } else {
+            consolePrinter.printMessage("Could not edit post.");
+        }
+    }
+
+    public void deletePost() {
+        consolePrinter.printHeader("Delete post");
+
+        int postId = consoleReader.readInt("Post id: ");
+        Post post = postRepository.findById(postId);
+
+        if (post == null) {
+            consolePrinter.printMessage("Post not found.");
+            return;
+        }
+
+        if (!isCurrentUserOwner(post.getOwnerId())) {
+            consolePrinter.printMessage("You can only delete your own posts.");
+            return;
+        }
+
+        boolean success = postService.deletePost(postId);
+
+        if (success) {
+            consolePrinter.printMessage("Post deleted.");
+        } else {
+            consolePrinter.printMessage("Could not delete post.");
+        }
+    }
+
+    public void votePost() {
+        consolePrinter.printHeader("Vote post");
+
+        int postId = consoleReader.readInt("Post id: ");
+
+        if (postRepository.findById(postId) == null) {
+            consolePrinter.printMessage("Post not found.");
+            return;
+        }
+
+        consolePrinter.printVoteMenu();
+        String choice = consoleReader.readText();
+        Post.VoteType voteType;
+
+        switch (choice) {
+            case "1" -> voteType = Post.VoteType.UPVOTE;
+            case "2" -> voteType = Post.VoteType.DOWNVOTE;
+            case "0" -> {
+                return;
+            }
+            default -> {
+                consolePrinter.printInvalidChoiceMessage();
+                return;
+            }
+        }
+
+        boolean success = postService.votePost(postId, voteType);
+
+        if (success) {
+            consolePrinter.printMessage("Vote saved. Repeating the same vote removes it.");
+        } else {
+            consolePrinter.printMessage("Could not save vote.");
+        }
+    }
+
+    private void printPosts(List<Post> posts) {
+        if (posts.isEmpty()) {
+            consolePrinter.printMessage("No posts yet.");
+            return;
+        }
+
+        for (Post post : posts) {
+            User owner = userRepository.findById(post.getOwnerId());
+            Subreddit subreddit = subredditRepository.getSubredditById(post.getSubredditId());
+
+            String username = owner == null ? "unknown" : owner.getUsername();
+            String subredditName = subreddit == null ? "unknown" : subreddit.getName();
+
+            int upvotes = getPostUpvotes(post);
+            int downvotes = getPostDownvotes(post);
+            int score = upvotes - downvotes;
+
+            consolePrinter.printPost(post, username, subredditName, score, upvotes, downvotes);
+        }
+    }
+
+    private boolean isCurrentUserOwner(int ownerId) {
+        User currentUser = authService.getLoggedInUser();
+        return currentUser != null && currentUser.getId() == ownerId;
+    }
+
+    private int getPostUpvotes(Post post) {
+        int count = 0;
+        for (Map.Entry<Integer, Post.VoteType> entry : post.getUserIdVotesMap().entrySet()) {
+            if (entry.getValue() == Post.VoteType.UPVOTE) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int getPostDownvotes(Post post) {
+        int count = 0;
+        for (Map.Entry<Integer, Post.VoteType> entry : post.getUserIdVotesMap().entrySet()) {
+            if (entry.getValue() == Post.VoteType.DOWNVOTE) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
