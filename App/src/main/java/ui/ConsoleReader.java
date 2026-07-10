@@ -38,7 +38,7 @@ public class ConsoleReader {
 
             try {
                 return Integer.parseInt(input);
-            } catch (NumberFormatException exception) {
+            } catch (NumberFormatException e) {
                 consolePrinter.printInvalidNumberMessage();
             }
         }
