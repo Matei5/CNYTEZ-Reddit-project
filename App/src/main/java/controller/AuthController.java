@@ -6,18 +6,23 @@ import ui.ConsoleReader;
 
 public class AuthController {
 
+    private static AuthController instance;
+
     private final ConsoleReader consoleReader;
     private final ConsolePrinter consolePrinter;
     private final AuthService authService;
 
-    public AuthController(
-            ConsoleReader consoleReader,
-            ConsolePrinter consolePrinter,
-            AuthService authService
-    ) {
-        this.consoleReader = consoleReader;
-        this.consolePrinter = consolePrinter;
-        this.authService = authService;
+    private AuthController() {
+        this.consoleReader = ConsoleReader.getInstance();
+        this.consolePrinter = ConsolePrinter.getInstance();
+        this.authService = AuthService.getInstance();
+    }
+
+    public static AuthController getInstance() {
+        if (instance == null) {
+            instance = new AuthController();
+        }
+        return instance;
     }
 
     public void register() {
