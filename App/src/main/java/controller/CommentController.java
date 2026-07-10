@@ -47,7 +47,7 @@ public class CommentController {
         int postId = consoleReader.readInt("Parent post id: ");
 
         if (postRepository.findById(postId) == null) {
-            consolePrinter.printMessage("Post not found.");
+            consolePrinter.printMessage("Comment not found.");
             return;
         }
 
