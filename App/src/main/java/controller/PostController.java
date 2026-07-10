@@ -16,6 +16,8 @@ import java.util.Map;
 
 public class PostController {
 
+    private static PostController instance;
+
     private final ConsoleReader consoleReader;
     private final ConsolePrinter consolePrinter;
     private final PostService postService;
@@ -24,22 +26,21 @@ public class PostController {
     private final SubredditRepository subredditRepository;
     private final AuthService authService;
 
-    public PostController(
-            ConsoleReader consoleReader,
-            ConsolePrinter consolePrinter,
-            PostService postService,
-            PostRepository postRepository,
-            UserRepository userRepository,
-            SubredditRepository subredditRepository,
-            AuthService authService
-    ) {
-        this.consoleReader = consoleReader;
-        this.consolePrinter = consolePrinter;
-        this.postService = postService;
-        this.postRepository = postRepository;
-        this.userRepository = userRepository;
-        this.subredditRepository = subredditRepository;
-        this.authService = authService;
+    private PostController() {
+        this.consoleReader = ConsoleReader.getInstance();
+        this.consolePrinter = ConsolePrinter.getInstance();
+        this.postService = PostService.getInstance();
+        this.postRepository = PostRepository.getInstance();
+        this.userRepository = UserRepository.getInstance();
+        this.subredditRepository = SubredditRepository.getSubredditRepository();
+        this.authService = AuthService.getInstance();
+    }
+
+    public static PostController getInstance() {
+        if (instance == null) {
+            instance = new PostController();
+        }
+        return instance;
     }
 
     public void createPost() {
