@@ -1,15 +1,25 @@
 package service;
 
+import model.Comment;
+import model.Post;
 import model.User;
+import repository.CommentRepository;
+import repository.PostRepository;
 import repository.UserRepository;
+
+import java.util.List;
 
 public class UserService {
     private static UserService instance;
 
     private UserRepository userRepository;
+    private PostRepository postRepository;
+    private CommentRepository commentRepository;
 
     private UserService() {
         userRepository = UserRepository.getInstance();
+        postRepository = PostRepository.getInstance();
+        commentRepository = CommentRepository.getInstance();
     }
 
     public static UserService getInstance() {
@@ -29,5 +39,21 @@ public class UserService {
 
         userRepository.deleteById(userId);
         return true;
+    }
+
+    public int calculateKarma(int userId) {
+        int karma = 0;
+
+        List<Post> posts = postRepository.getPostsByUser(userId);
+        for (Post post : posts) {
+            karma += post.getScore();
+        }
+
+        List<Comment> comments = commentRepository.getCommentsByUser(userId);
+        for (Comment comment : comments) {
+            karma += comment.getScore();
+        }
+
+        return karma;
     }
 }

@@ -41,4 +41,19 @@ public class CommentService {
         commentRepository.removeById(id);
         return true;
     }
+
+    public boolean voteComment(int id, Comment.VoteType voteType) {
+        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        if (loggedUser == null) {
+            return false;
+        }
+
+        Comment comment = commentRepository.findById(id);
+        if (comment == null) {
+            return false;
+        }
+
+        comment.vote(loggedUser.getId(), voteType);
+        return true;
+    }
 }

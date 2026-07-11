@@ -1,23 +1,22 @@
 package controller;
 
 import model.User;
-import repository.UserRepository;
 import service.AuthService;
+import service.UserService;
 import ui.ConsolePrinter;
-import ui.ConsoleReader;
 
 public class UserController {
 
     private static UserController instance;
 
     private final ConsolePrinter consolePrinter;
-    private final UserRepository userRepository;
     private final AuthService authService;
+    private final UserService userService;
 
     private UserController() {
         this.consolePrinter = ConsolePrinter.getInstance();
-        this.userRepository = UserRepository.getInstance();
         this.authService = AuthService.getInstance();
+        this.userService = UserService.getInstance();
     }
 
     public static UserController getInstance() {
@@ -36,7 +35,7 @@ public class UserController {
             return;
         }
 
-        int karma = userRepository.getUserKarma(user.getId());
+        int karma = userService.calculateKarma(user.getId());
 
         consolePrinter.printUserProfile(user, karma);
     }

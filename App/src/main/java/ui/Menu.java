@@ -4,6 +4,7 @@ import controller.AuthController;
 import controller.CommentController;
 import controller.PostController;
 import controller.SubredditController;
+import controller.UserController;
 
 import service.AuthService;
 
@@ -13,6 +14,7 @@ public class Menu {
     private final PostController postController;
     private final CommentController commentController;
     private final SubredditController subredditController;
+    private final UserController userController;
     
     private final AuthService authService;
     private final ConsolePrinter consolePrinter;
@@ -23,6 +25,7 @@ public class Menu {
         postController = PostController.getInstance();
         commentController = CommentController.getInstance();
         subredditController = SubredditController.getInstance();
+        userController = UserController.getInstance();
         
         authService = AuthService.getInstance();
         consolePrinter = ConsolePrinter.getInstance();
@@ -66,7 +69,8 @@ public class Menu {
             case "1" -> runSubredditMenu();
             case "2" -> runPostMenu();
             case "3" -> runCommentMenu();
-            case "4" -> {
+            case "4" -> userController.printUserProfile();
+            case "5" -> {
                 authService.logout();
                 consolePrinter.printLoggedOutMessage();
             }
@@ -125,6 +129,7 @@ public class Menu {
                 case "2" -> commentController.listComments();
                 case "3" -> commentController.listMyComments();
                 case "4" -> commentController.deleteComment();
+                case "5" -> commentController.voteComment();
                 case "0" -> open = false;
                 default -> consolePrinter.printInvalidChoiceMessage();
             }

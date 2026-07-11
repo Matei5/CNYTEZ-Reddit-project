@@ -5,7 +5,6 @@ import model.User;
 import repository.PostRepository;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 public class PostService {
     private static PostService instance;
@@ -63,18 +62,7 @@ public class PostService {
             return false;
         }
 
-        Map<Integer, Post.VoteType> userIdVotesMap = post.getUserIdVotesMap();
-        if (userIdVotesMap.containsKey(userId)) {
-            Post.VoteType storedVoteType = userIdVotesMap.get(userId);
-
-            if (voteType == storedVoteType) {
-                userIdVotesMap.remove(userId);
-            } else {
-                userIdVotesMap.put(userId, voteType);
-            }
-        } else {
-            userIdVotesMap.put(userId, voteType);
-        }
+        post.vote(userId, voteType);
 
         return true;
     }

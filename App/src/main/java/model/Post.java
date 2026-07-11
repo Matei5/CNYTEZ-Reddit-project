@@ -71,7 +71,45 @@ public class Post {
         return ownerId;
     }
 
-    public Map<Integer, VoteType> getUserIdVotesMap() {
-        return userIdVotesMap;
+    public void vote(int userId, VoteType voteType) {
+        if (userIdVotesMap.containsKey(userId)) {
+            VoteType existingVote = userIdVotesMap.get(userId);
+
+            if (existingVote == voteType) {
+                userIdVotesMap.remove(userId);
+            } else {
+                userIdVotesMap.put(userId, voteType);
+            }
+        } else {
+            userIdVotesMap.put(userId, voteType);
+        }
+    }
+
+    public int getUpvotesCount() {
+        int count = 0;
+
+        for (VoteType voteType : userIdVotesMap.values()) {
+            if (voteType == VoteType.UPVOTE) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public int getDownvotesCount() {
+        int count = 0;
+
+        for (VoteType voteType : userIdVotesMap.values()) {
+            if (voteType == VoteType.DOWNVOTE) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public int getScore() {
+        return getUpvotesCount() - getDownvotesCount();
     }
 }

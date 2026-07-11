@@ -32,7 +32,8 @@ public class ConsolePrinter {
                 "1. Subreddits\n" +
                 "2. Posts\n" +
                 "3. Comments\n" +
-                "4. Logout\n" +
+                "4. My Profile\n" +
+                "5. Logout\n" +
                 "0. Exit\n\n" +
                 "Choose: ", username);
     }
@@ -60,6 +61,7 @@ public class ConsolePrinter {
         System.out.print("\n=== Comments ===\n" +
                 "1. Create comment      2. List comments\n" +
                 "3. List my comments    4. Delete comment\n" +
+                "5. Vote comment\n" +
                 "0. Back\n\n" +
                 "Choose: ");
     }
@@ -129,8 +131,11 @@ public class ConsolePrinter {
                 "Text: %s\n" +
                 "Image: %s\n" +
                 "Replies: %s\n" +
+                "Score: %d (%d up, %d down)\n" +
                 "Created: %s\n",
-                comment.getID(), comment.getParentPostID(), comment.getParentCommentID(), username, comment.getTitle(), comment.getText(), comment.getImage(), comment.getChildCommentIDs(), comment.getCreationDate());
+                comment.getID(), comment.getParentPostID(), comment.getParentCommentID(), username,
+                comment.getTitle(), comment.getText(), comment.getImage(), comment.getChildCommentIDs(),
+                comment.getScore(), comment.getUpvotesCount(), comment.getDownvotesCount(), comment.getCreationDate());
     }
 
     public void printPosts(List<Post> posts) {
