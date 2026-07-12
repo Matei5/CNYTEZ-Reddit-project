@@ -2,56 +2,16 @@ package repository;
 
 import model.Post;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class PostRepository {
-    private static PostRepository instance;
-    private List<Post> posts;
+public interface PostRepository {
+    void addPost(Post post);
 
-    private PostRepository() {
-        posts = new ArrayList<>();
-    }
+    Post findById(int id);
 
-    public static PostRepository getInstance() {
-        if (instance == null) {
-            instance = new PostRepository();
-        }
+    boolean deleteById(int id);
 
-        return instance;
-    }
+    List<Post> getAllPosts();
 
-    public void addPost(Post post) {
-        posts.add(post);
-    }
-
-    public Post findById(int id) {
-        for (Post post : posts) {
-            if (post.getId() == id) {
-                return post;
-            }
-        }
-
-        return null;
-    }
-
-    public boolean deleteById(int id) {
-        return posts.removeIf(post -> post.getId() == id);
-    }
-
-    public List<Post> getAllPosts() {
-        return posts;
-    }
-
-    public List<Post> getPostsByUser(int userId) {
-        List<Post> userPosts = new ArrayList<>();
-
-        for (Post post : posts) {
-            if (post.getOwnerId() == userId) {
-                userPosts.add(post);
-            }
-        }
-
-        return userPosts;
-    }
+    List<Post> getPostsByUser(int userId);
 }

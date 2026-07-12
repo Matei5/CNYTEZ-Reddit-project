@@ -4,6 +4,9 @@ import model.Comment;
 import model.Post;
 import model.User;
 import repository.CommentRepository;
+import repository.InMemoryCommentRepository;
+import repository.InMemoryPostRepository;
+import repository.InMemoryUserRepository;
 import repository.PostRepository;
 import repository.UserRepository;
 
@@ -17,9 +20,9 @@ public class UserService {
     private CommentRepository commentRepository;
 
     private UserService() {
-        userRepository = UserRepository.getInstance();
-        postRepository = PostRepository.getInstance();
-        commentRepository = CommentRepository.getInstance();
+        userRepository = InMemoryUserRepository.getInstance();
+        postRepository = InMemoryPostRepository.getInstance();
+        commentRepository = InMemoryCommentRepository.getInstance();
     }
 
     public static UserService getInstance() {

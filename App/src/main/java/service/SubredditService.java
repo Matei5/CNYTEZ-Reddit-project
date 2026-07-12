@@ -2,6 +2,8 @@ package service;
 
 import model.Subreddit;
 import model.User;
+import repository.InMemorySubredditRepository;
+import repository.InMemoryUserRepository;
 import repository.SubredditRepository;
 import repository.UserRepository;
 
@@ -10,11 +12,13 @@ import java.time.LocalDateTime;
 public class SubredditService {
     private int nextSubredditId;
 
-    private SubredditRepository subRepository = SubredditRepository.getSubredditRepository();
+    private SubredditRepository subRepository = InMemorySubredditRepository.getInstance();
+    private UserRepository userRepository;
 
     private static SubredditService subService = new SubredditService();
 
     private SubredditService() {
+        userRepository = InMemoryUserRepository.getInstance();
         nextSubredditId = 1;
     }
 
@@ -53,7 +57,7 @@ public class SubredditService {
         if (loggedUser.getId() != sub.getOwnerId())
             return false;
 
-        User newOwner = UserRepository.getInstance().findByUsername(username);
+        User newOwner = userRepository.findByUsername(username);
         if (newOwner == null)
             return false;
 
