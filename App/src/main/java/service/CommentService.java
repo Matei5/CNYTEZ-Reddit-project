@@ -4,6 +4,7 @@ import log.LogManager;
 import model.Comment;
 import model.User;
 import repository.CommentRepository;
+import repository.InMemoryCommentRepository;
 
 public class CommentService {
     private static CommentService instance;
@@ -12,7 +13,7 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     public CommentService() {
-        this.commentRepository = CommentRepository.getInstance();
+        this.commentRepository = InMemoryCommentRepository.getInstance();
         currentId = 1;
     }
 

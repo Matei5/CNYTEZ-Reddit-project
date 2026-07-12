@@ -1,65 +1,18 @@
 package repository;
 
 import model.User;
-import java.util.ArrayList;
 import java.util.List;
 
-public class UserRepository {
-    private static UserRepository instance;
+public interface UserRepository {
+    void save(User user);
 
-    private List<User> users;
+    User findById(int id);
 
-    private UserRepository() {
-        users = new ArrayList<>();
-    }
+    User findByUsername(String username);
 
-    public static UserRepository getInstance() {
-        if (instance == null) {
-            instance = new UserRepository();
-        }
+    User findByEmail(String email);
 
-        return instance;
-    }
+    List<User> findAll();
 
-    public void save(User user) {
-        users.add(user);
-    }
-
-    public User findById(int id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user;
-            }
-        }
-
-        return null;
-    }
-
-    public User findByUsername(String username) {
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                return user;
-            }
-        }
-
-        return null;
-    }
-
-    public User findByEmail(String email) {
-        for (User user : users) {
-            if (user.getEmail().equals(email)) {
-                return user;
-            }
-        }
-
-        return null;
-    }
-
-    public List<User> findAll() {
-        return new ArrayList<>(users);
-    }
-
-    public void deleteById(int id) {
-        users.removeIf(user -> user.getId() == id);
-    }
+    void deleteById(int id);
 }

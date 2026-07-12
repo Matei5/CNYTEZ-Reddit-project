@@ -3,6 +3,9 @@ package controller;
 import model.Post;
 import model.Subreddit;
 import model.User;
+import repository.InMemoryPostRepository;
+import repository.InMemorySubredditRepository;
+import repository.InMemoryUserRepository;
 import repository.PostRepository;
 import repository.SubredditRepository;
 import repository.UserRepository;
@@ -29,9 +32,9 @@ public class PostController {
         this.consoleReader = ConsoleReader.getInstance();
         this.consolePrinter = ConsolePrinter.getInstance();
         this.postService = PostService.getInstance();
-        this.postRepository = PostRepository.getInstance();
-        this.userRepository = UserRepository.getInstance();
-        this.subredditRepository = SubredditRepository.getSubredditRepository();
+        this.postRepository = InMemoryPostRepository.getInstance();
+        this.userRepository = InMemoryUserRepository.getInstance();
+        this.subredditRepository = InMemorySubredditRepository.getInstance();
         this.authService = AuthService.getInstance();
     }
 

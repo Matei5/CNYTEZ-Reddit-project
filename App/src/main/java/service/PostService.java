@@ -3,6 +3,7 @@ package service;
 import log.LogManager;
 import model.Post;
 import model.User;
+import repository.InMemoryPostRepository;
 import repository.PostRepository;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ public class PostService {
     private int currentId;
 
     public PostService() {
-        postRepository = PostRepository.getInstance();
+        postRepository = InMemoryPostRepository.getInstance();
         currentId = 1;
     }
 

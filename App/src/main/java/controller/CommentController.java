@@ -3,6 +3,9 @@ package controller;
 import model.Comment;
 import model.User;
 import repository.CommentRepository;
+import repository.InMemoryCommentRepository;
+import repository.InMemoryPostRepository;
+import repository.InMemoryUserRepository;
 import repository.PostRepository;
 import repository.UserRepository;
 import service.AuthService;
@@ -28,9 +31,9 @@ public class CommentController {
         this.consoleReader = ConsoleReader.getInstance();
         this.consolePrinter = ConsolePrinter.getInstance();
         this.commentService = CommentService.getInstance();
-        this.commentRepository = CommentRepository.getInstance();
-        this.postRepository = PostRepository.getInstance();
-        this.userRepository = UserRepository.getInstance();
+        this.commentRepository = InMemoryCommentRepository.getInstance();
+        this.postRepository = InMemoryPostRepository.getInstance();
+        this.userRepository = InMemoryUserRepository.getInstance();
         this.authService = AuthService.getInstance();
     }
 

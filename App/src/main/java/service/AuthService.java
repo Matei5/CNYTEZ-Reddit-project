@@ -2,6 +2,7 @@ package service;
 
 import log.LogManager;
 import model.User;
+import repository.InMemoryUserRepository;
 import repository.UserRepository;
 
 public class AuthService {
@@ -12,7 +13,7 @@ public class AuthService {
     private User currentUser;
 
     private AuthService() {
-        userRepository = UserRepository.getInstance();
+        userRepository = InMemoryUserRepository.getInstance();
         nextUserId = 1;
         currentUser = null;
     }
