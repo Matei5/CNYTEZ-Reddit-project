@@ -2,6 +2,8 @@ package controller;
 
 import model.Subreddit;
 import model.User;
+import repository.InMemorySubredditRepository;
+import repository.InMemoryUserRepository;
 import repository.SubredditRepository;
 import repository.UserRepository;
 import service.AuthService;
@@ -26,8 +28,8 @@ public class SubredditController {
         this.consoleReader = ConsoleReader.getInstance();
         this.consolePrinter = ConsolePrinter.getInstance();
         this.subredditService = SubredditService.getSubredditService();
-        this.subredditRepository = SubredditRepository.getSubredditRepository();
-        this.userRepository = UserRepository.getInstance();
+        this.subredditRepository = InMemorySubredditRepository.getInstance();
+        this.userRepository = InMemoryUserRepository.getInstance();
         this.authService = AuthService.getInstance();
     }
 
