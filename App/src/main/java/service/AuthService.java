@@ -1,5 +1,6 @@
 package service;
 
+import log.LogManager;
 import model.User;
 import repository.UserRepository;
 
@@ -26,10 +27,14 @@ public class AuthService {
 
     public boolean register(String name, String username, String email, String password) {
         if (userRepository.findByUsername(username) != null) {
+            LogManager.getInstance().log("Register failed! Username " + username + " already exists");
+
             return false;
         }
 
         if (userRepository.findByEmail(email) != null) {
+            LogManager.getInstance().log("Register failed! Email " + email + " already exists");
+
             return false;
         }
 
@@ -37,6 +42,7 @@ public class AuthService {
         nextUserId++;
 
         userRepository.save(user);
+        LogManager.getInstance().log("Register success! User with id " + user.getId() + " registered");
 
         return true;
     }
@@ -45,18 +51,26 @@ public class AuthService {
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
+            LogManager.getInstance().log("Login failed! Username " + username + " doesn't exist");
+
             return false;
         }
 
         if (!user.checkPassword(password)) {
+            LogManager.getInstance().log("Login failed! Password incorrect for user with id " + user.getId());
+
             return false;
         }
 
         currentUser = user;
+        LogManager.getInstance().log("Login success! User with id " + user.getId() + " logged in");
+
         return true;
     }
 
     public void logout() {
+        LogManager.getInstance().log("Logout success! User with id " + currentUser.getId() + " logged out");
+
         currentUser = null;
     }
 
