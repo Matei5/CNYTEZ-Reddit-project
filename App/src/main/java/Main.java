@@ -6,14 +6,7 @@ import controller.UserController;
 import log.ConsoleLogger;
 import log.FileLogger;
 import log.LogManager;
-import repository.CommentRepository;
-import repository.InMemoryCommentRepository;
-import repository.InMemoryPostRepository;
-import repository.InMemorySubredditRepository;
-import repository.InMemoryUserRepository;
-import repository.PostRepository;
-import repository.SubredditRepository;
-import repository.UserRepository;
+import repository.*;
 import service.AuthService;
 import service.CommentService;
 import service.PostService;
@@ -28,10 +21,10 @@ public class Main {
         LogManager.getInstance().addLogger(ConsoleLogger.getInstance());
         LogManager.getInstance().addLogger(FileLogger.getInstance());
 
-        UserRepository userRepository = InMemoryUserRepository.getInstance();
-        PostRepository postRepository = InMemoryPostRepository.getInstance();
-        CommentRepository commentRepository = InMemoryCommentRepository.getInstance();
-        SubredditRepository subredditRepository = InMemorySubredditRepository.getInstance();
+        UserRepository userRepository = JsonFileUserRepository.getInstance();
+        PostRepository postRepository = JsonFilePostRepository.getInstance();
+        CommentRepository commentRepository = JsonFileCommentRepository.getInstance();
+        SubredditRepository subredditRepository = JsonFileSubredditRepository.getInstance();
 
         AuthService authService = new AuthService(userRepository);
         PostService postService = new PostService(postRepository, subredditRepository, authService);

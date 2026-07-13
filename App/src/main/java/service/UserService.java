@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.repository.RepositoryException;
 import log.LogManager;
 import model.Comment;
 import model.Post;
@@ -25,7 +26,7 @@ public class UserService {
         this.commentRepository = commentRepository;
     }
 
-    public boolean deleteUser(int userId) {
+    public boolean deleteUser(int userId) throws RepositoryException {
         User user = userRepository.findById(userId);
 
         if (user == null) {
@@ -40,7 +41,7 @@ public class UserService {
         return true;
     }
 
-    public int calculateKarma(int userId) {
+    public int calculateKarma(int userId) throws RepositoryException {
         int karma = 0;
 
         List<Post> posts = postRepository.getPostsByUser(userId);

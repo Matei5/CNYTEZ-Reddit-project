@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.repository.RepositoryException;
 import log.LogManager;
 import model.Post;
 import model.User;
@@ -22,7 +23,7 @@ public class PostService {
     }
 
 
-    public boolean createPost(int subredditId, String title, String text, String image) {
+    public boolean createPost(int subredditId, String title, String text, String image) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Create post failed! User was not logged in");
@@ -55,7 +56,7 @@ public class PostService {
         return true;
     }
 
-    public boolean deletePost(int id) {
+    public boolean deletePost(int id) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Delete post failed! No user was logged in");
@@ -91,7 +92,7 @@ public class PostService {
         return true;
     }
 
-    public boolean editPost(int id, String newTitle, String newText, String newImage) {
+    public boolean editPost(int id, String newTitle, String newText, String newImage) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Edit post failed! No user was logged in");
@@ -129,7 +130,7 @@ public class PostService {
         return true;
     }
 
-    public boolean votePost(int id, Post.VoteType voteType) {
+    public boolean votePost(int id, Post.VoteType voteType) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Vote post failed! No user was logged in");

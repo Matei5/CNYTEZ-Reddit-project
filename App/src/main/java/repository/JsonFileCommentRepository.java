@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import exceptions.repository.RepositoryException;
 import model.Post;
 import log.LogManager;
 import model.Comment;
@@ -53,25 +54,25 @@ public class JsonFileCommentRepository implements CommentRepository {
         }
     }
 
-    private void saveToFile(){
+    private void saveToFile() throws RepositoryException {
         File file = new File(FILE_PATH);
         file.getParentFile().mkdirs();
 
         try (Writer writer = new BufferedWriter(new FileWriter(file))){
             gson.toJson(comments, writer);
         } catch (IOException e){
-            LogManager.getInstance().log("Failed to save comments: " + e.getMessage());
+            throw new RepositoryException("Failed to save comments: " + e.getMessage());
         }
     }
 
     @Override
-    public void addComment(Comment comment) {
+    public void addComment(Comment comment) throws RepositoryException {
         comments.add(comment);
         saveToFile();
     }
 
     @Override
-    public void removeById(int id) {
+    public void removeById(int id) throws RepositoryException {
         boolean removed = comments.removeIf(comment -> comment.getID() == id);
         if (removed) saveToFile();;
     }

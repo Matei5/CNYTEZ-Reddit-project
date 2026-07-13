@@ -1,17 +1,18 @@
 package repository;
 
+import exceptions.repository.RepositoryException;
 import model.Post;
 
 import java.util.List;
 
 public interface PostRepository {
-    void addPost(Post post);
+    void addPost(Post post) throws RepositoryException;
 
-    Post findById(int id);
+    Post findById(int id) throws RepositoryException;
 
-    boolean deleteById(int id);
+    boolean deleteById(int id) throws RepositoryException;
 
-    List<Post> getAllPosts();
+    List<Post> getAllPosts() throws RepositoryException;
 
-    List<Post> getPostsByUser(int userId);
+    List<Post> getPostsByUser(int userId) throws RepositoryException;
 }

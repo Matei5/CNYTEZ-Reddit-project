@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.repository.RepositoryException;
 import log.LogManager;
 import model.Subreddit;
 import model.User;
@@ -22,7 +23,7 @@ public class SubredditService {
         this.nextSubredditId = 1;
     }
 
-    public boolean createSubreddit(String name, String photo, String banner) {
+    public boolean createSubreddit(String name, String photo, String banner) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Create subreddit failed! No user was logged in");
@@ -55,7 +56,7 @@ public class SubredditService {
         return true;
     }
 
-    public boolean changeOwner(String username, int id) {
+    public boolean changeOwner(String username, int id) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Change owner of subreddit failed! No user was logged in");
@@ -103,7 +104,7 @@ public class SubredditService {
         return true;
     }
 
-    public boolean joinSubreddit(int id) {
+    public boolean joinSubreddit(int id) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Join subreddit failed! No user was logged in");
@@ -137,7 +138,7 @@ public class SubredditService {
         return true;
     }
 
-    public boolean leaveSubreddit(int id) {
+    public boolean leaveSubreddit(int id) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Leave subreddit failed! No user was logged in");
@@ -181,7 +182,7 @@ public class SubredditService {
         return true;
     }
 
-    public boolean changePhoto(String photo, int id) {
+    public boolean changePhoto(String photo, int id) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Change photo of subreddit failed! No user was logged in");
@@ -217,7 +218,7 @@ public class SubredditService {
         return true;
     }
 
-    public boolean changeBanner(String banner, int id) {
+    public boolean changeBanner(String banner, int id) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Change banner of subreddit failed! No user was logged in");

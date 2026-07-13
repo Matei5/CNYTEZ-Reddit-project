@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.repository.RepositoryException;
 import log.LogManager;
 import model.Comment;
 import model.Post;
@@ -21,7 +22,7 @@ public class CommentService {
     }
 
     public boolean createComment(int parentPostID, int parentCommentID,
-                              String title, String content,String image) {
+                              String title, String content,String image) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Create comment failed! No user was logged in");
@@ -66,7 +67,7 @@ public class CommentService {
         return true;
     }
 
-    public boolean deleteComment(int id) {
+    public boolean deleteComment(int id) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Delete comment failed! No user was logged in");
@@ -109,7 +110,7 @@ public class CommentService {
         return true;
     }
 
-    public boolean voteComment(int id, Comment.VoteType voteType) {
+    public boolean voteComment(int id, Comment.VoteType voteType) throws RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Vote comment failed! No user was logged in");

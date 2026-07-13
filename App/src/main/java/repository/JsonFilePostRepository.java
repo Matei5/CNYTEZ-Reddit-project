@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import exceptions.repository.RepositoryException;
 import model.Post;
 import log.LogManager;
 import model.Subreddit;
@@ -53,19 +54,19 @@ public class JsonFilePostRepository implements PostRepository {
         }
     }
 
-    private void saveToFile(){
+    private void saveToFile() throws RepositoryException {
         File file = new File(FILE_PATH);
         file.getParentFile().mkdirs();
 
         try (Writer writer = new BufferedWriter(new FileWriter(file))){
             gson.toJson(posts, writer);
         } catch (IOException e){
-            LogManager.getInstance().log("Failed to save subreddits: " + e.getMessage());
+            throw new RepositoryException("Failed to save subreddits: " + e.getMessage());
         }
     }
 
     @Override
-    public void addPost(Post post) {
+    public void addPost(Post post) throws RepositoryException {
         posts.add(post);
         saveToFile();
     }
@@ -82,7 +83,7 @@ public class JsonFilePostRepository implements PostRepository {
     }
 
     @Override
-    public boolean deleteById(int id) {
+    public boolean deleteById(int id) throws RepositoryException {
         boolean removed = posts.removeIf(post -> post.getId() == id);
         if (removed){
             saveToFile();

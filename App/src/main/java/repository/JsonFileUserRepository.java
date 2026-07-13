@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import exceptions.repository.RepositoryException;
 import model.User;
 import log.LogManager;
 
@@ -22,7 +23,8 @@ public class JsonFileUserRepository implements UserRepository {
 
     private JsonFileUserRepository() {
         gson = new GsonBuilder().setPrettyPrinting().create();
-        users = loadFromFile();
+        users = new ArrayList<>();
+        loadFromFile();
     }
 
     public static JsonFileUserRepository getInstance() {
@@ -33,7 +35,7 @@ public class JsonFileUserRepository implements UserRepository {
         return instance;
     }
 
-    private List<User> loadFromFile(){
+    private List<User> loadFromFile() {
         File file = new File(FILE_PATH);
         if(!file.exists()){ return new ArrayList<>(); }
 
@@ -49,19 +51,19 @@ public class JsonFileUserRepository implements UserRepository {
         }
     }
 
-    private void saveToFile(){
+    private void saveToFile() throws RepositoryException {
         File file = new File(FILE_PATH);
         file.getParentFile().mkdirs();
 
         try (Writer writer = new BufferedWriter(new FileWriter(file))){
             gson.toJson(users, writer);
         } catch (IOException e){
-            LogManager.getInstance().log("Failed to save users: " + e.getMessage());
+            throw new RepositoryException("Failed to save users: " + e.getMessage());
         }
     }
 
     @Override
-    public void save(User user) {
+    public void save(User user) throws RepositoryException {
         users.add(user);
         saveToFile();
     }
@@ -105,7 +107,7 @@ public class JsonFileUserRepository implements UserRepository {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(int id) throws RepositoryException {
         users.removeIf(user -> user.getId() == id);
         saveToFile();
     }

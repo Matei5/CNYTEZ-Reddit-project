@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import exceptions.repository.RepositoryException;
 import model.Subreddit;
 import log.LogManager;
 
@@ -37,7 +38,7 @@ public class JsonFileSubredditRepository implements SubredditRepository {
         return instance;
     }
 
-    private List<Subreddit> loadFromFile(){
+    private List<Subreddit> loadFromFile() {
         File file = new File(FILE_PATH);
         if(!file.exists()){ return new ArrayList<>(); }
 
@@ -53,19 +54,19 @@ public class JsonFileSubredditRepository implements SubredditRepository {
         }
     }
 
-    private void saveToFile(){
+    private void saveToFile() throws RepositoryException {
         File file = new File(FILE_PATH);
         file.getParentFile().mkdirs();
 
         try (Writer writer = new BufferedWriter(new FileWriter(file))){
             gson.toJson(subredditList, writer);
         } catch (IOException e){
-            LogManager.getInstance().log("Failed to save subreddits: " + e.getMessage());
+            throw new RepositoryException("Failed to save subreddits: " + e.getMessage());
         }
     }
 
     @Override
-    public void addSubreddit(Subreddit subreddit) {
+    public void addSubreddit(Subreddit subreddit) throws RepositoryException {
         subredditList.add(subreddit);
         saveToFile();
     }

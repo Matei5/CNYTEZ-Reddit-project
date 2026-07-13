@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.repository.RepositoryException;
 import log.LogManager;
 import model.User;
 
@@ -15,7 +16,7 @@ public class AuthService {
         this.nextUserId = 1;
         this.currentUser = null;
     }
-    public boolean register(String name, String username, String email, String password) {
+    public boolean register(String name, String username, String email, String password) throws RepositoryException {
         if (userRepository.findByUsername(username) != null) {
             LogManager.getInstance().log("Register failed! Username " + username + " already exists");
 
@@ -37,7 +38,7 @@ public class AuthService {
         return true;
     }
 
-    public boolean login(String username, String password) {
+    public boolean login(String username, String password) throws RepositoryException {
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
