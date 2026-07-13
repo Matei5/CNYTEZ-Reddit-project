@@ -44,7 +44,7 @@ public class UserService {
         }
 
         userRepository.deleteById(userId);
-        LogManager.getInstance().log("Delete user succes! User with id" + userId + " deleted");
+        LogManager.getInstance().log("Delete user success! User with id" + userId + " deleted");
 
         return true;
     }
