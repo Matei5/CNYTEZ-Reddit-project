@@ -1,5 +1,7 @@
 package controller;
 
+import exceptions.repository.RepositoryException;
+import log.LogManager;
 import model.User;
 import service.AuthService;
 import service.UserService;
@@ -25,7 +27,13 @@ public class UserController {
             return;
         }
 
-        int karma = userService.calculateKarma(user.getId());
+        int karma = 0;
+
+        try {
+            karma = userService.calculateKarma(user.getId());
+        } catch (RepositoryException e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         consolePrinter.printUserProfile(user, karma);
     }

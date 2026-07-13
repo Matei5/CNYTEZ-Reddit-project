@@ -1,5 +1,6 @@
 package controller;
 
+import exceptions.repository.RepositoryException;
 import log.LogManager;
 import model.Comment;
 import model.User;
@@ -10,6 +11,7 @@ import service.CommentService;
 import ui.ConsolePrinter;
 import ui.ConsoleReader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommentController {
@@ -70,7 +72,13 @@ public class CommentController {
     public void listComments() {
         consolePrinter.printHeader("Comments");
 
-        List<Comment> comments = commentRepository.getComments();
+        List<Comment> comments = new ArrayList<>();
+
+        try {
+            comments = commentRepository.getComments();
+        } catch (RepositoryException e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (comments.isEmpty()) {
             consolePrinter.printMessage("No comments yet.");
@@ -86,8 +94,13 @@ public class CommentController {
         User user = authService.getLoggedInUser();
 
         consolePrinter.printHeader("My comments");
+        List<Comment> comments = new ArrayList<>();
 
-        List<Comment> comments = commentRepository.getCommentsByUser(user.getId());
+        try {
+            comments = commentRepository.getCommentsByUser(user.getId());
+        } catch (RepositoryException e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (comments.isEmpty()) {
             consolePrinter.printMessage("You have not written any comments yet.");
@@ -156,7 +169,12 @@ public class CommentController {
     }
 
     private void printComment(Comment comment) {
-        User owner = userRepository.findById(comment.getOwnerID());
+        User owner = null;
+        try {
+            owner = userRepository.findById(comment.getOwnerID());
+        } catch (RepositoryException e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
         String username = owner == null ? "unknown" : owner.getUsername();
         consolePrinter.printComment(comment, username);
     }

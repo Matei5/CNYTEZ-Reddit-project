@@ -1,5 +1,6 @@
 package controller;
 
+import exceptions.repository.RepositoryException;
 import log.LogManager;
 import model.Subreddit;
 import model.User;
@@ -9,6 +10,7 @@ import service.SubredditService;
 import ui.ConsolePrinter;
 import ui.ConsoleReader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SubredditController {
@@ -33,7 +35,13 @@ public class SubredditController {
     public void listSubreddits() {
         consolePrinter.printHeader("Subreddits");
 
-        List<Subreddit> subreddits = subredditRepository.getAllSubreddits();
+        List<Subreddit> subreddits = new ArrayList<>();
+
+        try {
+            subreddits = subredditRepository.getAllSubreddits();
+        } catch (RepositoryException e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (subreddits.isEmpty()) {
             consolePrinter.printMessage("No subreddits yet.");
@@ -108,7 +116,14 @@ public class SubredditController {
     }
 
     private void printSubreddit(Subreddit subreddit) {
-        User owner = userRepository.findById(subreddit.getOwnerId());
+        User owner = null;
+
+        try {
+            owner = userRepository.findById(subreddit.getOwnerId());
+        } catch (RepositoryException e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
+
         String ownerUsername = owner == null ? "unknown" : owner.getUsername();
         consolePrinter.printSubreddit(subreddit, ownerUsername);
     }

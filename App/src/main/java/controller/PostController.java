@@ -1,5 +1,6 @@
 package controller;
 
+import exceptions.repository.RepositoryException;
 import log.LogManager;
 import model.Post;
 import model.Subreddit;
@@ -64,13 +65,23 @@ public class PostController {
 
     public void listAllPosts() {
         consolePrinter.printHeader("All posts");
-        printPosts(postRepository.getAllPosts());
+
+        try {
+            printPosts(postRepository.getAllPosts());
+        } catch (RepositoryException e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
     }
 
     public void listMyPosts() {
         User user = authService.getLoggedInUser();
         consolePrinter.printHeader("My posts");
-        printPosts(postRepository.getPostsByUser(user.getId()));
+
+        try {
+            printPosts(postRepository.getPostsByUser(user.getId()));
+        } catch (RepositoryException e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
     }
 
     public void editPost() {
@@ -159,8 +170,21 @@ public class PostController {
         }
 
         for (Post post : posts) {
-            User owner = userRepository.findById(post.getOwnerId());
-            Subreddit subreddit = subredditRepository.getSubredditById(post.getSubredditId());
+            User owner = null;
+
+            try {
+                owner = userRepository.findById(post.getOwnerId());
+            } catch (RepositoryException e) {
+                LogManager.getInstance().log(e.getMessage());
+            }
+
+            Subreddit subreddit = null;
+
+            try {
+                subreddit = subredditRepository.getSubredditById(post.getSubredditId());
+            } catch (RepositoryException e) {
+                LogManager.getInstance().log(e.getMessage());
+            }
 
             String username = owner == null ? "unknown" : owner.getUsername();
             String subredditName = subreddit == null ? "unknown" : subreddit.getName();
