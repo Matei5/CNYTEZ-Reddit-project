@@ -3,9 +3,6 @@ package controller;
 import model.Post;
 import model.Subreddit;
 import model.User;
-import repository.InMemoryPostRepository;
-import repository.InMemorySubredditRepository;
-import repository.InMemoryUserRepository;
 import repository.PostRepository;
 import repository.SubredditRepository;
 import repository.UserRepository;
@@ -17,9 +14,6 @@ import ui.ConsoleReader;
 import java.util.List;
 
 public class PostController {
-
-    private static PostController instance;
-
     private final ConsoleReader consoleReader;
     private final ConsolePrinter consolePrinter;
     private final PostService postService;
@@ -28,21 +22,20 @@ public class PostController {
     private final SubredditRepository subredditRepository;
     private final AuthService authService;
 
-    private PostController() {
+    public PostController(
+            PostService postService,
+            PostRepository postRepository,
+            UserRepository userRepository,
+            SubredditRepository subredditRepository,
+            AuthService authService
+    ) {
         this.consoleReader = ConsoleReader.getInstance();
         this.consolePrinter = ConsolePrinter.getInstance();
-        this.postService = PostService.getInstance();
-        this.postRepository = InMemoryPostRepository.getInstance();
-        this.userRepository = InMemoryUserRepository.getInstance();
-        this.subredditRepository = InMemorySubredditRepository.getInstance();
-        this.authService = AuthService.getInstance();
-    }
-
-    public static PostController getInstance() {
-        if (instance == null) {
-            instance = new PostController();
-        }
-        return instance;
+        this.postService = postService;
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.subredditRepository = subredditRepository;
+        this.authService = authService;
     }
 
     public void createPost() {
@@ -109,6 +102,7 @@ public class PostController {
         consolePrinter.printHeader("Vote post");
 
         int postId = consoleReader.readInt("Post id: ");
+        consolePrinter.printVoteMenu();
         String choice = consoleReader.readText();
         Post.VoteType voteType;
 
@@ -156,10 +150,4 @@ public class PostController {
             );
         }
     }
-
-    private boolean isCurrentUserOwner(int ownerId) {
-        User currentUser = authService.getLoggedInUser();
-        return currentUser != null && currentUser.getId() == ownerId;
-    }
-
 }

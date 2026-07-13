@@ -20,16 +20,24 @@ public class Menu {
     private final ConsolePrinter consolePrinter;
     private final ConsoleReader consoleReader;
 
-    public Menu() {
-        authController = AuthController.getInstance();
-        postController = PostController.getInstance();
-        commentController = CommentController.getInstance();
-        subredditController = SubredditController.getInstance();
-        userController = UserController.getInstance();
-        
-        authService = AuthService.getInstance();
-        consolePrinter = ConsolePrinter.getInstance();
-        consoleReader = ConsoleReader.getInstance();
+    public Menu(
+            AuthController authController,
+            PostController postController,
+            CommentController commentController,
+            SubredditController subredditController,
+            UserController userController,
+            AuthService authService,
+            ConsolePrinter consolePrinter,
+            ConsoleReader consoleReader
+    ) {
+        this.authController = authController;
+        this.postController = postController;
+        this.commentController = commentController;
+        this.subredditController = subredditController;
+        this.userController = userController;
+        this.authService = authService;
+        this.consolePrinter = consolePrinter;
+        this.consoleReader = consoleReader;
     }
 
     public void start() {

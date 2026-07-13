@@ -3,36 +3,27 @@ package service;
 import log.LogManager;
 import model.Post;
 import model.User;
-import repository.InMemoryPostRepository;
-import repository.InMemorySubredditRepository;
 import repository.PostRepository;
 import repository.SubredditRepository;
 
 import java.time.LocalDateTime;
 
 public class PostService {
-    private static PostService instance;
-
-    private PostRepository postRepository;
-    private SubredditRepository subredditRepository;
+    private final PostRepository postRepository;
+    private final SubredditRepository subredditRepository;
+    private final AuthService authService;
     private int currentId;
 
-    public PostService() {
-        postRepository = InMemoryPostRepository.getInstance();
-        subredditRepository = InMemorySubredditRepository.getInstance();
-        currentId = 1;
+    public PostService(PostRepository postRepository, SubredditRepository subredditRepository, AuthService authService) {
+        this.postRepository = postRepository;
+        this.subredditRepository = subredditRepository;
+        this.authService = authService;
+        this.currentId = 1;
     }
 
-    public static PostService getInstance() {
-        if (instance == null) {
-            instance = new PostService();
-        }
-
-        return instance;
-    }
 
     public boolean createPost(int subredditId, String title, String text, String image) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Create post failed! User was not logged in");
 
@@ -65,7 +56,7 @@ public class PostService {
     }
 
     public boolean deletePost(int id) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Delete post failed! No user was logged in");
 
@@ -94,14 +85,14 @@ public class PostService {
         postRepository.deleteById(id);
 
         LogManager.getInstance().log(
-            "Create post success! User with id " + loggedUser.getId() + " deleted post with id " + id
+            "Delete post success! User with id " + loggedUser.getId() + " deleted post with id " + id
         );
 
         return true;
     }
 
     public boolean editPost(int id, String newTitle, String newText, String newImage) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Edit post failed! No user was logged in");
 
@@ -139,7 +130,7 @@ public class PostService {
     }
 
     public boolean votePost(int id, Post.VoteType voteType) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Vote post failed! No user was logged in");
 

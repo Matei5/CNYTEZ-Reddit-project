@@ -2,11 +2,8 @@ package controller;
 
 import model.Subreddit;
 import model.User;
-import repository.InMemorySubredditRepository;
-import repository.InMemoryUserRepository;
 import repository.SubredditRepository;
 import repository.UserRepository;
-import service.AuthService;
 import service.SubredditService;
 import ui.ConsolePrinter;
 import ui.ConsoleReader;
@@ -14,30 +11,22 @@ import ui.ConsoleReader;
 import java.util.List;
 
 public class SubredditController {
-
-    private static SubredditController instance;
-
     private final ConsoleReader consoleReader;
     private final ConsolePrinter consolePrinter;
     private final SubredditService subredditService;
     private final SubredditRepository subredditRepository;
     private final UserRepository userRepository;
-    private final AuthService authService;
 
-    private SubredditController() {
+    public SubredditController(
+            SubredditService subredditService,
+            SubredditRepository subredditRepository,
+            UserRepository userRepository
+    ) {
         this.consoleReader = ConsoleReader.getInstance();
         this.consolePrinter = ConsolePrinter.getInstance();
-        this.subredditService = SubredditService.getSubredditService();
-        this.subredditRepository = InMemorySubredditRepository.getInstance();
-        this.userRepository = InMemoryUserRepository.getInstance();
-        this.authService = AuthService.getInstance();
-    }
-
-    public static SubredditController getInstance() {
-        if (instance == null) {
-            instance = new SubredditController();
-        }
-        return instance;
+        this.subredditService = subredditService;
+        this.subredditRepository = subredditRepository;
+        this.userRepository = userRepository;
     }
 
     public void listSubreddits() {

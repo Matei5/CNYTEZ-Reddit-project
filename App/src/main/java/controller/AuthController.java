@@ -5,24 +5,14 @@ import ui.ConsolePrinter;
 import ui.ConsoleReader;
 
 public class AuthController {
-
-    private static AuthController instance;
-
     private final ConsoleReader consoleReader;
     private final ConsolePrinter consolePrinter;
     private final AuthService authService;
 
-    private AuthController() {
+    public AuthController(AuthService authService) {
         this.consoleReader = ConsoleReader.getInstance();
         this.consolePrinter = ConsolePrinter.getInstance();
-        this.authService = AuthService.getInstance();
-    }
-
-    public static AuthController getInstance() {
-        if (instance == null) {
-            instance = new AuthController();
-        }
-        return instance;
+        this.authService = authService;
     }
 
     public void register() {

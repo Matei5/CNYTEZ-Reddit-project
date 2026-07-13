@@ -3,8 +3,6 @@ package controller;
 import model.Comment;
 import model.User;
 import repository.CommentRepository;
-import repository.InMemoryCommentRepository;
-import repository.InMemoryUserRepository;
 import repository.UserRepository;
 import service.AuthService;
 import service.CommentService;
@@ -14,9 +12,6 @@ import ui.ConsoleReader;
 import java.util.List;
 
 public class CommentController {
-
-    private static CommentController instance;
-
     private final ConsoleReader consoleReader;
     private final ConsolePrinter consolePrinter;
     private final CommentService commentService;
@@ -24,20 +19,18 @@ public class CommentController {
     private final UserRepository userRepository;
     private final AuthService authService;
 
-    private CommentController() {
+    public CommentController(
+            CommentService commentService,
+            CommentRepository commentRepository,
+            UserRepository userRepository,
+            AuthService authService
+    ) {
         this.consoleReader = ConsoleReader.getInstance();
         this.consolePrinter = ConsolePrinter.getInstance();
-        this.commentService = CommentService.getInstance();
-        this.commentRepository = InMemoryCommentRepository.getInstance();
-        this.userRepository = InMemoryUserRepository.getInstance();
-        this.authService = AuthService.getInstance();
-    }
-
-    public static CommentController getInstance() {
-        if (instance == null) {
-            instance = new CommentController();
-        }
-        return instance;
+        this.commentService = commentService;
+        this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
+        this.authService = authService;
     }
 
     public void createComment() {
@@ -147,18 +140,5 @@ public class CommentController {
         User owner = userRepository.findById(comment.getOwnerID());
         String username = owner == null ? "unknown" : owner.getUsername();
         consolePrinter.printComment(comment, username);
-    }
-
-    private boolean isCurrentUserOwner(int ownerId) {
-        User currentUser = authService.getLoggedInUser();
-        return currentUser != null && currentUser.getId() == ownerId;
-    }
-
-    private Comment getLastComment() {
-        List<Comment> comments = commentRepository.getComments();
-        if (comments.isEmpty()) {
-            return null;
-        }
-        return comments.get(comments.size() - 1);
     }
 }
