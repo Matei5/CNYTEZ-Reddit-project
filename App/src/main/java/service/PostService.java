@@ -4,7 +4,9 @@ import log.LogManager;
 import model.Post;
 import model.User;
 import repository.InMemoryPostRepository;
+import repository.InMemorySubredditRepository;
 import repository.PostRepository;
+import repository.SubredditRepository;
 
 import java.time.LocalDateTime;
 
@@ -12,10 +14,12 @@ public class PostService {
     private static PostService instance;
 
     private PostRepository postRepository;
+    private SubredditRepository subredditRepository;
     private int currentId;
 
     public PostService() {
         postRepository = InMemoryPostRepository.getInstance();
+        subredditRepository = InMemorySubredditRepository.getInstance();
         currentId = 1;
     }
 
@@ -27,8 +31,23 @@ public class PostService {
         return instance;
     }
 
-    public void createPost(int subredditId, String title, String text, String image) {
+    public boolean createPost(int subredditId, String title, String text, String image) {
         User loggedUser = AuthService.getInstance().getLoggedInUser();
+        if (loggedUser == null) {
+            LogManager.getInstance().log("Create post failed! User was not logged in");
+
+            return false;
+        }
+
+        if (subredditRepository.getSubredditById(subredditId) == null) {
+            LogManager.getInstance().log(
+                "Create post failed! User with id " + loggedUser.getId() +
+                " tried to create post for subreddit with id " + subredditId + " that doesn't exist"
+            );
+
+            return false;
+        }
+
         int ownerId = loggedUser.getId();
         LocalDateTime creationDate = LocalDateTime.now();
 
@@ -41,6 +60,8 @@ public class PostService {
             "Create post success! User with id " + loggedUser.getId() +
             " created post with id " + post.getId() + " for subreddit with id " + subredditId
         );
+
+        return true;
     }
 
     public boolean deletePost(int id) {
@@ -51,20 +72,32 @@ public class PostService {
             return false;
         }
 
-        boolean deleted = postRepository.deleteById(id);
-
-        if (!deleted) {
+        Post post = postRepository.findById(id);
+        if (post == null) {
             LogManager.getInstance().log(
-                "Create post failed! User with id " + loggedUser.getId() +
+                "Delete post failed! User with id " + loggedUser.getId() +
                 " tried to delete post with id " + id + " that doesn't exist"
             );
-        } else {
-            LogManager.getInstance().log(
-                "Create post success! User with id " + loggedUser.getId() + " deleted post with id " + id
-            );
+
+            return false;
         }
 
-        return deleted;
+        if (post.getOwnerId() != loggedUser.getId()) {
+            LogManager.getInstance().log(
+                "Delete post failed! User with id " + loggedUser.getId() +
+                " is not the owner of post with id " + id
+            );
+
+            return false;
+        }
+
+        postRepository.deleteById(id);
+
+        LogManager.getInstance().log(
+            "Create post success! User with id " + loggedUser.getId() + " deleted post with id " + id
+        );
+
+        return true;
     }
 
     public boolean editPost(int id, String newTitle, String newText, String newImage) {
@@ -80,6 +113,15 @@ public class PostService {
             LogManager.getInstance().log(
                 "Edit post failed! User with id " + loggedUser.getId() +
                 " tried to edit post with id " + id + " that doesn't exist"
+            );
+
+            return false;
+        }
+
+        if (post.getOwnerId() != loggedUser.getId()) {
+            LogManager.getInstance().log(
+                "Edit post failed! User with id " + loggedUser.getId() +
+                " is not the owner of post with id " + id
             );
 
             return false;

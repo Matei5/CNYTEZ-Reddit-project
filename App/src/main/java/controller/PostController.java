@@ -49,20 +49,17 @@ public class PostController {
         consolePrinter.printHeader("Create post");
 
         int subredditId = consoleReader.readInt("Subreddit id: ");
-
-        Subreddit subreddit = subredditRepository.getSubredditById(subredditId);
-
-        if (subreddit == null) {
-            consolePrinter.printMessage("Subreddit does not exist.");
-            return;
-        }
-
         String title = consoleReader.readText("Title: ");
         String text = consoleReader.readText("Text: ");
         String image = consoleReader.readText("Image path: ");
 
-        postService.createPost(subredditId, title, text, image);
-        consolePrinter.printMessage("Post created.");
+        boolean success = postService.createPost(subredditId, title, text, image);
+
+        if (success) {
+            consolePrinter.printMessage("Post created.");
+        } else {
+            consolePrinter.printMessage("Post could not be created! Make sure the subreddit exists");
+        }
     }
 
     public void listAllPosts() {
@@ -80,17 +77,6 @@ public class PostController {
         consolePrinter.printHeader("Edit post");
 
         int postId = consoleReader.readInt("Post id: ");
-        Post post = postRepository.findById(postId);
-
-        if (post == null) {
-            consolePrinter.printMessage("Post not found.");
-            return;
-        }
-
-        if (!isCurrentUserOwner(post.getOwnerId())) {
-            consolePrinter.printMessage("You can only edit your own posts.");
-            return;
-        }
 
         String title = consoleReader.readText("New title: ");
         String text = consoleReader.readText("New text: ");
@@ -101,7 +87,7 @@ public class PostController {
         if (success) {
             consolePrinter.printMessage("Post edited.");
         } else {
-            consolePrinter.printMessage("Could not edit post.");
+            consolePrinter.printMessage("Could not edit post. It may not exist or you are not the owner");
         }
     }
 
@@ -109,24 +95,13 @@ public class PostController {
         consolePrinter.printHeader("Delete post");
 
         int postId = consoleReader.readInt("Post id: ");
-        Post post = postRepository.findById(postId);
-
-        if (post == null) {
-            consolePrinter.printMessage("Post not found.");
-            return;
-        }
-
-        if (!isCurrentUserOwner(post.getOwnerId())) {
-            consolePrinter.printMessage("You can only delete your own posts.");
-            return;
-        }
 
         boolean success = postService.deletePost(postId);
 
         if (success) {
             consolePrinter.printMessage("Post deleted.");
         } else {
-            consolePrinter.printMessage("Could not delete post.");
+            consolePrinter.printMessage("Could not delete post. It may not exist or you are not the owner");
         }
     }
 
@@ -134,13 +109,6 @@ public class PostController {
         consolePrinter.printHeader("Vote post");
 
         int postId = consoleReader.readInt("Post id: ");
-
-        if (postRepository.findById(postId) == null) {
-            consolePrinter.printMessage("Post not found.");
-            return;
-        }
-
-        consolePrinter.printVoteMenu();
         String choice = consoleReader.readText();
         Post.VoteType voteType;
 
