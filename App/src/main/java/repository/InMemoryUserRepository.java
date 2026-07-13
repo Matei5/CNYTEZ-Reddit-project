@@ -5,7 +5,7 @@ import model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonFileUserRepository implements UserRepository {
+public class InMemoryUserRepository implements UserRepository {
     private static InMemoryUserRepository instance;
 
     private final List<User> users;
