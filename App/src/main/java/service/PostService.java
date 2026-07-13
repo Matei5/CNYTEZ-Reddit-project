@@ -94,7 +94,7 @@ public class PostService {
         postRepository.deleteById(id);
 
         LogManager.getInstance().log(
-            "Create post success! User with id " + loggedUser.getId() + " deleted post with id " + id
+            "Delete post success! User with id " + loggedUser.getId() + " deleted post with id " + id
         );
 
         return true;

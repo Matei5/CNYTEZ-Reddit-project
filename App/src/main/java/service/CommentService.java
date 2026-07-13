@@ -48,7 +48,7 @@ public class CommentService {
             return false;
         }
 
-        if (parentCommentID != 0 && commentRepository.findById(parentCommentID) != null) {
+        if (parentCommentID != 0 && commentRepository.findById(parentCommentID) == null) {
             LogManager.getInstance().log(
                 "Create comment failed! User with id " + loggedUser.getId() +
                 " tried to reply to comment with id " + parentCommentID + " that doesn't exist"
@@ -68,7 +68,7 @@ public class CommentService {
             parentComment.addChildCommentID(comment.getID());
         }
         LogManager.getInstance().log(
-            "Create comment success! User with id " + loggedUser +
+            "Create comment success! User with id " + loggedUser.getId() +
             " created comment with id " + comment.getID()
         );
 
@@ -111,7 +111,7 @@ public class CommentService {
         commentRepository.removeById(id);
 
         LogManager.getInstance().log(
-            "Create comment success! User with id " + loggedUser +
+            "Delete comment success! User with id " + loggedUser.getId() +
             " deleted comment with id " + id
         );
 
