@@ -5,33 +5,24 @@ import model.Comment;
 import model.Post;
 import model.User;
 import repository.CommentRepository;
-import repository.InMemoryCommentRepository;
-import repository.InMemoryPostRepository;
 import repository.PostRepository;
 
 public class CommentService {
-    private static CommentService instance;
+    private int currentId;
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
+    private final AuthService authService;
 
-    private static int currentId;
-    private CommentRepository commentRepository;
-    private PostRepository postRepository;
-
-    public CommentService() {
-        this.commentRepository = InMemoryCommentRepository.getInstance();
-        this.postRepository = InMemoryPostRepository.getInstance();
-        currentId = 1;
-    }
-
-    public static CommentService getInstance() {
-        if (instance == null) {
-            instance = new CommentService();
-        }
-        return instance;
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository, AuthService authService) {
+        this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
+        this.authService = authService;
+        this.currentId = 1;
     }
 
     public boolean createComment(int parentPostID, int parentCommentID,
                               String title, String content,String image) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Create comment failed! No user was logged in");
 
@@ -76,7 +67,7 @@ public class CommentService {
     }
 
     public boolean deleteComment(int id) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Delete comment failed! No user was logged in");
 
@@ -119,7 +110,7 @@ public class CommentService {
     }
 
     public boolean voteComment(int id, Comment.VoteType voteType) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Vote comment failed! No user was logged in");
 

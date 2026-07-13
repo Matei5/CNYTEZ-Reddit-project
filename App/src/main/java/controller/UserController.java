@@ -6,24 +6,14 @@ import service.UserService;
 import ui.ConsolePrinter;
 
 public class UserController {
-
-    private static UserController instance;
-
     private final ConsolePrinter consolePrinter;
     private final AuthService authService;
     private final UserService userService;
 
-    private UserController() {
+    public UserController(AuthService authService, UserService userService) {
         this.consolePrinter = ConsolePrinter.getInstance();
-        this.authService = AuthService.getInstance();
-        this.userService = UserService.getInstance();
-    }
-
-    public static UserController getInstance() {
-        if (instance == null) {
-            instance = new UserController();
-        }
-        return instance;
+        this.authService = authService;
+        this.userService = userService;
     }
 
     public void printUserProfile() {

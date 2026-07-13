@@ -5,33 +5,24 @@ import model.Comment;
 import model.Post;
 import model.User;
 import repository.CommentRepository;
-import repository.InMemoryCommentRepository;
-import repository.InMemoryPostRepository;
-import repository.InMemoryUserRepository;
 import repository.PostRepository;
 import repository.UserRepository;
 
 import java.util.List;
 
 public class UserService {
-    private static UserService instance;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
-    private UserRepository userRepository;
-    private PostRepository postRepository;
-    private CommentRepository commentRepository;
-
-    private UserService() {
-        userRepository = InMemoryUserRepository.getInstance();
-        postRepository = InMemoryPostRepository.getInstance();
-        commentRepository = InMemoryCommentRepository.getInstance();
-    }
-
-    public static UserService getInstance() {
-        if (instance == null) {
-            instance = new UserService();
-        }
-
-        return instance;
+    public UserService(
+            UserRepository userRepository,
+            PostRepository postRepository,
+            CommentRepository commentRepository
+    ) {
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
     }
 
     public boolean deleteUser(int userId) {

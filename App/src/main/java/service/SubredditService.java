@@ -3,8 +3,6 @@ package service;
 import log.LogManager;
 import model.Subreddit;
 import model.User;
-import repository.InMemorySubredditRepository;
-import repository.InMemoryUserRepository;
 import repository.SubredditRepository;
 import repository.UserRepository;
 
@@ -13,22 +11,19 @@ import java.time.LocalDateTime;
 public class SubredditService {
     private int nextSubredditId;
 
-    private SubredditRepository subRepository = InMemorySubredditRepository.getInstance();
-    private UserRepository userRepository;
+    private final SubredditRepository subRepository;
+    private final UserRepository userRepository;
+    private final AuthService authService;
 
-    private static SubredditService subService = new SubredditService();
-
-    private SubredditService() {
-        userRepository = InMemoryUserRepository.getInstance();
-        nextSubredditId = 1;
-    }
-
-    public static SubredditService getSubredditService() {
-        return subService;
+    public SubredditService(SubredditRepository subRepository, UserRepository userRepository, AuthService authService) {
+        this.subRepository = subRepository;
+        this.userRepository = userRepository;
+        this.authService = authService;
+        this.nextSubredditId = 1;
     }
 
     public boolean createSubreddit(String name, String photo, String banner) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Create subreddit failed! No user was logged in");
 
@@ -61,7 +56,7 @@ public class SubredditService {
     }
 
     public boolean changeOwner(String username, int id) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Change owner of subreddit failed! No user was logged in");
 
@@ -101,7 +96,7 @@ public class SubredditService {
         sub.setOwnerId(newOwner.getId());
         sub.addFollower(newOwner.getId());
         LogManager.getInstance().log(
-            "Change owner of subreddit succes! User with id " + loggedUser.getId() +
+            "Change owner of subreddit success! User with id " + loggedUser.getId() +
             " changed the owner of the subreddit with id " + id + " to a user with username " + username
         );
 
@@ -109,7 +104,7 @@ public class SubredditService {
     }
 
     public boolean joinSubreddit(int id) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Join subreddit failed! No user was logged in");
 
@@ -143,7 +138,7 @@ public class SubredditService {
     }
 
     public boolean leaveSubreddit(int id) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Leave subreddit failed! No user was logged in");
 
@@ -187,7 +182,7 @@ public class SubredditService {
     }
 
     public boolean changePhoto(String photo, int id) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Change photo of subreddit failed! No user was logged in");
 
@@ -215,7 +210,7 @@ public class SubredditService {
 
         sub.setPhoto(photo);
         LogManager.getInstance().log(
-            "Change photo of subreddit succes! User with id " + loggedUser.getId() +
+            "Change photo of subreddit success! User with id " + loggedUser.getId() +
             " changed photo of subreddit with id " + id
         );
 
@@ -223,7 +218,7 @@ public class SubredditService {
     }
 
     public boolean changeBanner(String banner, int id) {
-        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Change banner of subreddit failed! No user was logged in");
 
@@ -251,7 +246,7 @@ public class SubredditService {
 
         sub.setBanner(banner);
         LogManager.getInstance().log(
-            "Change photo of subreddit succes! User with id " + loggedUser.getId() +
+            "Change banner of subreddit success! User with id " + loggedUser.getId() +
             " changed banner of subreddit with id " + id
         );
 

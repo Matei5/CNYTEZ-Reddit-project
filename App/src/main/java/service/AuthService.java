@@ -2,30 +2,19 @@ package service;
 
 import log.LogManager;
 import model.User;
-import repository.InMemoryUserRepository;
+
 import repository.UserRepository;
 
 public class AuthService {
-    private static AuthService instance;
-
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private int nextUserId;
     private User currentUser;
 
-    private AuthService() {
-        userRepository = InMemoryUserRepository.getInstance();
-        nextUserId = 1;
-        currentUser = null;
+    public AuthService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.nextUserId = 1;
+        this.currentUser = null;
     }
-
-    public static AuthService getInstance() {
-        if (instance == null) {
-            instance = new AuthService();
-        }
-
-        return instance;
-    }
-
     public boolean register(String name, String username, String email, String password) {
         if (userRepository.findByUsername(username) != null) {
             LogManager.getInstance().log("Register failed! Username " + username + " already exists");
@@ -70,6 +59,11 @@ public class AuthService {
     }
 
     public void logout() {
+        if (currentUser == null) {
+            LogManager.getInstance().log("Logout failed! No user was logged in");
+            return;
+        }
+
         LogManager.getInstance().log("Logout success! User with id " + currentUser.getId() + " logged out");
 
         currentUser = null;
