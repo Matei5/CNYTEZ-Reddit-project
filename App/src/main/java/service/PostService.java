@@ -121,6 +121,7 @@ public class PostService {
         post.setTitle(newTitle);
         post.setText(newText);
         post.setImage(newImage);
+        postRepository.update(post);
 
         LogManager.getInstance().log(
             "Edit post success! User with id " + loggedUser.getId() + " edited post with id " + id
@@ -150,6 +151,7 @@ public class PostService {
         }
 
         post.vote(userId, voteType);
+        postRepository.update(post);
 
         LogManager.getInstance().log(
             "Vote post success! User with id " + loggedUser.getId() +

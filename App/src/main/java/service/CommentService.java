@@ -128,6 +128,7 @@ public class CommentService {
         }
 
         comment.vote(loggedUser.getId(), voteType);
+        commentRepository.update(comment);
 
         LogManager.getInstance().log(
             "Vote comment success! User with id " + loggedUser.getId() +
