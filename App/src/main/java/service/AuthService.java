@@ -1,6 +1,7 @@
 package service;
 
 import exceptions.repository.RepositoryException;
+import exceptions.service.ServiceException;
 import log.LogManager;
 import model.User;
 
@@ -16,17 +17,13 @@ public class AuthService {
         this.nextUserId = 1;
         this.currentUser = null;
     }
-    public boolean register(String name, String username, String email, String password) throws RepositoryException {
+    public boolean register(String name, String username, String email, String password) throws ServiceException, RepositoryException {
         if (userRepository.findByUsername(username) != null) {
-            LogManager.getInstance().log("Register failed! Username " + username + " already exists");
-
-            return false;
+            throw new ServiceException("Register failed! Username " + username + " already exists");
         }
 
         if (userRepository.findByEmail(email) != null) {
-            LogManager.getInstance().log("Register failed! Email " + email + " already exists");
-
-            return false;
+            throw new ServiceException("Register failed! Email " + email + " already exists");
         }
 
         User user = new User(nextUserId, name, username, email, password);
@@ -38,19 +35,15 @@ public class AuthService {
         return true;
     }
 
-    public boolean login(String username, String password) throws RepositoryException {
+    public boolean login(String username, String password) throws ServiceException, RepositoryException {
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
-            LogManager.getInstance().log("Login failed! Username " + username + " doesn't exist");
-
-            return false;
+            throw new ServiceException("Login failed! Username " + username + " doesn't exist");
         }
 
         if (!user.checkPassword(password)) {
-            LogManager.getInstance().log("Login failed! Password incorrect for user with id " + user.getId());
-
-            return false;
+            throw new ServiceException("Login failed! Password incorrect for user with id " + user.getId());
         }
 
         currentUser = user;
@@ -59,10 +52,9 @@ public class AuthService {
         return true;
     }
 
-    public void logout() {
+    public void logout() throws ServiceException {
         if (currentUser == null) {
-            LogManager.getInstance().log("Logout failed! No user was logged in");
-            return;
+            throw new ServiceException("Logout failed! No user was logged in");
         }
 
         LogManager.getInstance().log("Logout success! User with id " + currentUser.getId() + " logged out");

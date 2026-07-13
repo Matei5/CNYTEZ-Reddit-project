@@ -6,6 +6,7 @@ import controller.PostController;
 import controller.SubredditController;
 import controller.UserController;
 
+import log.LogManager;
 import service.AuthService;
 
 public class Menu {
@@ -79,7 +80,11 @@ public class Menu {
             case "3" -> runCommentMenu();
             case "4" -> userController.printUserProfile();
             case "5" -> {
-                authService.logout();
+                try {
+                    authService.logout();
+                } catch (Exception e) {
+                    LogManager.getInstance().log(e.getMessage());
+                }
                 consolePrinter.printLoggedOutMessage();
             }
             case "0" -> {

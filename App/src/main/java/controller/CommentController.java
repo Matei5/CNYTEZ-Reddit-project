@@ -1,5 +1,6 @@
 package controller;
 
+import log.LogManager;
 import model.Comment;
 import model.User;
 import repository.CommentRepository;
@@ -45,13 +46,19 @@ public class CommentController {
         String text = consoleReader.readText("Text: ");
         String image = consoleReader.readText("Image path: ");
 
-        boolean success = commentService.createComment(
-                postId,
-                parentCommentId,
-                title,
-                text,
-                image
-        );
+        boolean success = false;
+
+        try {
+            success = commentService.createComment(
+                    postId,
+                    parentCommentId,
+                    title,
+                    text,
+                    image
+            );
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Comment created.");
@@ -97,7 +104,13 @@ public class CommentController {
 
         int commentId = consoleReader.readInt("Comment id: ");
 
-        boolean success = commentService.deleteComment(commentId);
+        boolean success = false;
+
+        try {
+            success = commentService.deleteComment(commentId);
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Comment deleted.");
@@ -127,7 +140,13 @@ public class CommentController {
             }
         }
 
-        boolean success = commentService.voteComment(commentId, voteType);
+        boolean success = false;
+
+        try {
+            success = commentService.voteComment(commentId, voteType);
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Vote saved. Repeating the same vote removes it.");

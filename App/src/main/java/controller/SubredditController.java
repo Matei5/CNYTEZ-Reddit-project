@@ -1,5 +1,6 @@
 package controller;
 
+import log.LogManager;
 import model.Subreddit;
 import model.User;
 import repository.SubredditRepository;
@@ -51,7 +52,13 @@ public class SubredditController {
         String photo = consoleReader.readText("Photo path: ");
         String banner = consoleReader.readText("Banner path: ");
 
-        boolean success = subredditService.createSubreddit(name, photo, banner);
+        boolean success = false;
+
+        try {
+            success = subredditService.createSubreddit(name, photo, banner);
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Subreddit created.");
@@ -65,7 +72,13 @@ public class SubredditController {
 
         int subredditId = consoleReader.readInt("Subreddit id: ");
 
-        boolean success = subredditService.joinSubreddit(subredditId);
+        boolean success = false;
+
+        try {
+            success = subredditService.joinSubreddit(subredditId);
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Joined subreddit.");
@@ -79,7 +92,13 @@ public class SubredditController {
 
         int subredditId = consoleReader.readInt("Subreddit id: ");
 
-        boolean success = subredditService.leaveSubreddit(subredditId);
+        boolean success = false;
+
+        try {
+            success = subredditService.leaveSubreddit(subredditId);
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Left subreddit.");

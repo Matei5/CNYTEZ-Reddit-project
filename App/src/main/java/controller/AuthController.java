@@ -1,5 +1,7 @@
 package controller;
 
+import exceptions.service.ServiceException;
+import log.LogManager;
 import service.AuthService;
 import ui.ConsolePrinter;
 import ui.ConsoleReader;
@@ -23,7 +25,13 @@ public class AuthController {
         String email = consoleReader.readText("Email: ");
         String password = consoleReader.readText("Password: ");
 
-        boolean success = authService.register(name, username, email, password);
+        boolean success = false;
+
+        try {
+            success = authService.register(name, username, email, password);
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Account created.");
@@ -38,7 +46,13 @@ public class AuthController {
         String username = consoleReader.readText("Username: ");
         String password = consoleReader.readText("Password: ");
 
-        boolean success = authService.login(username, password);
+        boolean success = false;
+
+        try {
+            success = authService.login(username, password);
+        } catch (Exception e) {
+        LogManager.getInstance().log(e.getMessage());
+    }
 
         if (success) {
             consolePrinter.printLoggedInMessage();

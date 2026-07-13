@@ -1,6 +1,7 @@
 package service;
 
 import exceptions.repository.RepositoryException;
+import exceptions.service.ServiceException;
 import log.LogManager;
 import model.Subreddit;
 import model.User;
@@ -23,21 +24,17 @@ public class SubredditService {
         this.nextSubredditId = 1;
     }
 
-    public boolean createSubreddit(String name, String photo, String banner) throws RepositoryException {
+    public boolean createSubreddit(String name, String photo, String banner) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Create subreddit failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Create subreddit failed! No user was logged in");
         }
 
         if (subRepository.getSubredditByName(name) != null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Create subreddit failed! User with id " + loggedUser.getId() +
                 " tried to create subreddit with name " + name + " that already exists"
             );
-
-            return false;
         }
 
         int ownerId = loggedUser.getId();
@@ -56,42 +53,34 @@ public class SubredditService {
         return true;
     }
 
-    public boolean changeOwner(String username, int id) throws RepositoryException {
+    public boolean changeOwner(String username, int id) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Change owner of subreddit failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Change owner of subreddit failed! No user was logged in");
         }
 
         Subreddit sub = subRepository.getSubredditById(id);
         if (sub == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Change owner of subreddit failed! User with id " + loggedUser.getId() +
                 " tried to change owner of subreddit with id " + id + " that doesn't exist"
             );
-
-            return false;
         }
 
         if (loggedUser.getId() != sub.getOwnerId()) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Change owner of subreddit failed! User with id " + loggedUser.getId() +
                 " is not the owner of subreddit with id " + id
             );
-
-            return false;
         }
 
         User newOwner = userRepository.findByUsername(username);
         if (newOwner == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Change owner of subreddit failed! User with id " + loggedUser.getId() +
                 " tried to change owner of subreddit with id " + id + " to a user with username " +
                 username + " that doesn't exist"
             );
-
-            return false;
         }
 
         sub.setOwnerId(newOwner.getId());
@@ -104,31 +93,25 @@ public class SubredditService {
         return true;
     }
 
-    public boolean joinSubreddit(int id) throws RepositoryException {
+    public boolean joinSubreddit(int id) throws ServiceException, RepositoryException{
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Join subreddit failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Join subreddit failed! No user was logged in");
         }
 
         Subreddit sub = subRepository.getSubredditById(id);
         if (sub == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Join subreddit failed! User with id " + loggedUser.getId() +
                 " tried to join subreddit with id " + id + " that doesn't exist"
             );
-
-            return false;
         }
 
         boolean hasJoined = sub.addFollower(loggedUser.getId());
         if (!hasJoined) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Join subreddit failed! User with id " + loggedUser.getId() + " already joined subreddit with id " + id
             );
-
-            return false;
         }
 
         LogManager.getInstance().log(
@@ -138,7 +121,7 @@ public class SubredditService {
         return true;
     }
 
-    public boolean leaveSubreddit(int id) throws RepositoryException {
+    public boolean leaveSubreddit(int id) throws ServiceException, RepositoryException{
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
             LogManager.getInstance().log("Leave subreddit failed! No user was logged in");
@@ -148,31 +131,25 @@ public class SubredditService {
 
         Subreddit sub = subRepository.getSubredditById(id);
         if (sub == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Join subreddit failed! User with id " + loggedUser.getId() +
                 " tried to leave subreddit with id " + id + " that doesn't exist"
             );
-
-            return false;
         }
 
         if (loggedUser.getId() == sub.getOwnerId()) { // Owner needs to change subreddit ownership before leaving
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Leave subreddit failed! The user with id " + loggedUser.getId() +
                 " tried to leave subreddit with id " + id + " as owner of the subreddit"
             );
-
-            return false;
         }
 
         boolean hasLeft = sub.removeFollower(loggedUser.getId());
         if (!hasLeft) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Leave subreddit failed! The user with id " + loggedUser.getId() +
                 " hasn't joined subreddit with id " + id
             );
-
-            return false;
         }
 
         LogManager.getInstance().log(
@@ -182,31 +159,25 @@ public class SubredditService {
         return true;
     }
 
-    public boolean changePhoto(String photo, int id) throws RepositoryException {
+    public boolean changePhoto(String photo, int id) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Change photo of subreddit failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Change photo of subreddit failed! No user was logged in");
         }
 
         Subreddit sub = subRepository.getSubredditById(id);
         if (sub == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Change photo of subreddit failed! User with id " + loggedUser.getId() +
                 " tried to change photo of subreddit with id " + id + " that doesn't exist"
             );
-
-            return false;
         }
 
         if (loggedUser.getId() != sub.getOwnerId()) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Change photo of subreddit failed! User with id " + loggedUser.getId() +
                 " is not the owner of subreddit with id " + id
             );
-
-            return false;
         }
 
         sub.setPhoto(photo);
@@ -218,31 +189,25 @@ public class SubredditService {
         return true;
     }
 
-    public boolean changeBanner(String banner, int id) throws RepositoryException {
+    public boolean changeBanner(String banner, int id) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Change banner of subreddit failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Change banner of subreddit failed! No user was logged in");
         }
 
         Subreddit sub = subRepository.getSubredditById(id);
         if (sub == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Change banner of subreddit failed! User with id " + loggedUser.getId() +
                 " tried to change banner of subreddit with id " + id + " that doesn't exist"
             );
-
-            return false;
         }
 
         if (loggedUser.getId() != sub.getOwnerId()) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Change banner of subreddit failed! User with id " + loggedUser.getId() +
                 " is not the owner of subreddit with id " + id
             );
-
-            return false;
         }
 
         sub.setBanner(banner);

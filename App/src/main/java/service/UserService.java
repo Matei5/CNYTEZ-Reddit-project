@@ -1,6 +1,7 @@
 package service;
 
 import exceptions.repository.RepositoryException;
+import exceptions.service.ServiceException;
 import log.LogManager;
 import model.Comment;
 import model.Post;
@@ -26,13 +27,11 @@ public class UserService {
         this.commentRepository = commentRepository;
     }
 
-    public boolean deleteUser(int userId) throws RepositoryException {
+    public boolean deleteUser(int userId) throws ServiceException, RepositoryException {
         User user = userRepository.findById(userId);
 
         if (user == null) {
-            LogManager.getInstance().log("Delete user failed! User with id" + userId + " doesn't exist");
-
-            return false;
+            throw new ServiceException("Delete user failed! User with id" + userId + " doesn't exist");
         }
 
         userRepository.deleteById(userId);

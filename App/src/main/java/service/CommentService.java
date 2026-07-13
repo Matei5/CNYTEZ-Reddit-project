@@ -1,6 +1,7 @@
 package service;
 
 import exceptions.repository.RepositoryException;
+import exceptions.service.ServiceException;
 import log.LogManager;
 import model.Comment;
 import model.Post;
@@ -22,31 +23,25 @@ public class CommentService {
     }
 
     public boolean createComment(int parentPostID, int parentCommentID,
-                              String title, String content,String image) throws RepositoryException {
+                              String title, String content,String image) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Create comment failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Create comment failed! No user was logged in");
         }
 
         Post post = postRepository.findById(parentPostID);
         if (post == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Create comment failed! User with id " + loggedUser.getId() +
                 " tried to comment on post with id " + parentPostID + " that doesn't exist"
             );
-
-            return false;
         }
 
         if (parentCommentID != 0 && commentRepository.findById(parentCommentID) == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Create comment failed! User with id " + loggedUser.getId() +
                 " tried to reply to comment with id " + parentCommentID + " that doesn't exist"
             );
-
-            return false;
         }
 
         int ownerId = loggedUser.getId();
@@ -67,31 +62,25 @@ public class CommentService {
         return true;
     }
 
-    public boolean deleteComment(int id) throws RepositoryException {
+    public boolean deleteComment(int id) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Delete comment failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Delete comment failed! No user was logged in");
         }
 
         Comment comment = commentRepository.findById(id);
         if (comment == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Delete comment failed! User with id " + loggedUser.getId() +
                 " tried to delete comment with id " + id + " that doesn't exist"
             );
-
-            return false;
         }
 
         if (comment.getOwnerID() != loggedUser.getId()) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Delete comment failed! User with id " + loggedUser.getId() +
                 " is not the owner of comment with id " + id
             );
-
-            return false;
         }
 
         Comment parentComment = commentRepository.findById(comment.getParentCommentID());
@@ -110,22 +99,18 @@ public class CommentService {
         return true;
     }
 
-    public boolean voteComment(int id, Comment.VoteType voteType) throws RepositoryException {
+    public boolean voteComment(int id, Comment.VoteType voteType) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Vote comment failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Vote comment failed! No user was logged in");
         }
 
         Comment comment = commentRepository.findById(id);
         if (comment == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Vote comment failed! User with id " + loggedUser.getId() +
                 " tried to vote comment with id " + id + " that doesn't exist"
             );
-
-            return false;
         }
 
         comment.vote(loggedUser.getId(), voteType);

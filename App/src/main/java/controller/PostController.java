@@ -1,5 +1,6 @@
 package controller;
 
+import log.LogManager;
 import model.Post;
 import model.Subreddit;
 import model.User;
@@ -46,7 +47,13 @@ public class PostController {
         String text = consoleReader.readText("Text: ");
         String image = consoleReader.readText("Image path: ");
 
-        boolean success = postService.createPost(subredditId, title, text, image);
+        boolean success = false;
+
+        try {
+            success = postService.createPost(subredditId, title, text, image);
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Post created.");
@@ -75,7 +82,13 @@ public class PostController {
         String text = consoleReader.readText("New text: ");
         String image = consoleReader.readText("New image path: ");
 
-        boolean success = postService.editPost(postId, title, text, image);
+        boolean success = false;
+
+        try {
+            success = postService.editPost(postId, title, text, image);
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Post edited.");
@@ -89,7 +102,13 @@ public class PostController {
 
         int postId = consoleReader.readInt("Post id: ");
 
-        boolean success = postService.deletePost(postId);
+        boolean success = false;
+
+        try {
+            success = postService.deletePost(postId);
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Post deleted.");
@@ -118,7 +137,13 @@ public class PostController {
             }
         }
 
-        boolean success = postService.votePost(postId, voteType);
+        boolean success = false;
+
+        try {
+            success = postService.votePost(postId, voteType);
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getMessage());
+        }
 
         if (success) {
             consolePrinter.printMessage("Vote saved. Repeating the same vote removes it.");

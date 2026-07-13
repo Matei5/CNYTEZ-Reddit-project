@@ -1,6 +1,7 @@
 package service;
 
 import exceptions.repository.RepositoryException;
+import exceptions.service.ServiceException;
 import log.LogManager;
 import model.Post;
 import model.User;
@@ -23,21 +24,17 @@ public class PostService {
     }
 
 
-    public boolean createPost(int subredditId, String title, String text, String image) throws RepositoryException {
+    public boolean createPost(int subredditId, String title, String text, String image) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Create post failed! User was not logged in");
-
-            return false;
+            throw new ServiceException("Create post failed! User was not logged in");
         }
 
         if (subredditRepository.getSubredditById(subredditId) == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Create post failed! User with id " + loggedUser.getId() +
                 " tried to create post for subreddit with id " + subredditId + " that doesn't exist"
             );
-
-            return false;
         }
 
         int ownerId = loggedUser.getId();
@@ -56,31 +53,25 @@ public class PostService {
         return true;
     }
 
-    public boolean deletePost(int id) throws RepositoryException {
+    public boolean deletePost(int id) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Delete post failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Delete post failed! No user was logged in");
         }
 
         Post post = postRepository.findById(id);
         if (post == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Delete post failed! User with id " + loggedUser.getId() +
                 " tried to delete post with id " + id + " that doesn't exist"
             );
-
-            return false;
         }
 
         if (post.getOwnerId() != loggedUser.getId()) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Delete post failed! User with id " + loggedUser.getId() +
                 " is not the owner of post with id " + id
             );
-
-            return false;
         }
 
         postRepository.deleteById(id);
@@ -92,31 +83,25 @@ public class PostService {
         return true;
     }
 
-    public boolean editPost(int id, String newTitle, String newText, String newImage) throws RepositoryException {
+    public boolean editPost(int id, String newTitle, String newText, String newImage) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Edit post failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Edit post failed! No user was logged in");
         }
 
         Post post = postRepository.findById(id);
         if (post == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Edit post failed! User with id " + loggedUser.getId() +
                 " tried to edit post with id " + id + " that doesn't exist"
             );
-
-            return false;
         }
 
         if (post.getOwnerId() != loggedUser.getId()) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Edit post failed! User with id " + loggedUser.getId() +
                 " is not the owner of post with id " + id
             );
-
-            return false;
         }
 
         post.setTitle(newTitle);
@@ -130,24 +115,20 @@ public class PostService {
         return true;
     }
 
-    public boolean votePost(int id, Post.VoteType voteType) throws RepositoryException {
+    public boolean votePost(int id, Post.VoteType voteType) throws ServiceException, RepositoryException {
         User loggedUser = authService.getLoggedInUser();
         if (loggedUser == null) {
-            LogManager.getInstance().log("Vote post failed! No user was logged in");
-
-            return false;
+            throw new ServiceException("Vote post failed! No user was logged in");
         }
 
         int userId = loggedUser.getId();
 
         Post post = postRepository.findById(id);
         if (post == null) {
-            LogManager.getInstance().log(
+            throw new ServiceException(
                 "Vote post failed! User with id " + loggedUser.getId() +
                 " tried to vote post with id " + id + " that doesn't exist"
             );
-
-            return false;
         }
 
         post.vote(userId, voteType);
