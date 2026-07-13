@@ -12,4 +12,6 @@ public interface SubredditRepository {
     Subreddit getSubredditByName(String name);
 
     List<Subreddit> getAllSubreddits();
+
+    void update(Subreddit sub);
 }

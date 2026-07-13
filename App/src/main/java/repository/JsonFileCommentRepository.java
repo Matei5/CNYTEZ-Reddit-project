@@ -104,4 +104,8 @@ public class JsonFileCommentRepository implements CommentRepository {
 
         return userComments;
     }
+
+    public void update(Comment comment) {
+        saveToFile();
+    }
 }

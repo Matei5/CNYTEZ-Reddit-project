@@ -93,4 +93,8 @@ public class JsonFileSubredditRepository implements SubredditRepository {
         return subredditList;
     }
 
+    public void update(Subreddit subreddit) {
+        saveToFile();
+    }
+
 }

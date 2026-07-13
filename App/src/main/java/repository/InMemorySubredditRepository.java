@@ -48,4 +48,6 @@ public class InMemorySubredditRepository implements SubredditRepository {
     public List<Subreddit> getAllSubreddits() {
         return subredditList;
     }
+
+    public void update(Subreddit sub) {}
 }

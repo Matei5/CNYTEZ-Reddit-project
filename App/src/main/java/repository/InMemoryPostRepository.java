@@ -59,4 +59,6 @@ public class InMemoryPostRepository implements PostRepository {
 
         return userPosts;
     }
+
+    public void update(Post post) {}
 }

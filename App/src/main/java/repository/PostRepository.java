@@ -1,6 +1,7 @@
 package repository;
 
 import model.Post;
+import model.User;
 
 import java.util.List;
 
@@ -14,4 +15,6 @@ public interface PostRepository {
     List<Post> getAllPosts();
 
     List<Post> getPostsByUser(int userId);
+
+    void update(Post post);
 }

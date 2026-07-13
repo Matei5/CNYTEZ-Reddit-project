@@ -107,4 +107,8 @@ public class JsonFilePostRepository implements PostRepository {
 
         return userPosts;
     }
+
+    public void update(Post post) {
+        saveToFile();
+    }
 }
