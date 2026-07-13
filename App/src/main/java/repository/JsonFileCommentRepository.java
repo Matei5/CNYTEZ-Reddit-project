@@ -27,7 +27,7 @@ public class JsonFileCommentRepository implements CommentRepository {
         gson = new GsonBuilder().setPrettyPrinting()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .create();
-        comments = new ArrayList<Comment>();
+        comments = loadFromFile();
     }
 
     public static JsonFileCommentRepository getInstance() {
@@ -42,7 +42,7 @@ public class JsonFileCommentRepository implements CommentRepository {
         if(!file.exists()){ return new ArrayList<>(); }
 
         try (Reader reader = new BufferedReader(new FileReader(file))){
-            Type listType = new TypeToken<ArrayList<Subreddit>>(){}.getType();
+            Type listType = new TypeToken<ArrayList<Comment>>(){}.getType();
             List<Comment> comments = gson.fromJson(reader,listType);
             if(comments.isEmpty()){ return new ArrayList<>(); }
             else { return comments; }
@@ -60,7 +60,7 @@ public class JsonFileCommentRepository implements CommentRepository {
         try (Writer writer = new BufferedWriter(new FileWriter(file))){
             gson.toJson(comments, writer);
         } catch (IOException e){
-            LogManager.getInstance().log("Failed to save subreddits: " + e.getMessage());
+            LogManager.getInstance().log("Failed to save comments: " + e.getMessage());
         }
     }
 

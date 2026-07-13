@@ -42,12 +42,12 @@ public class JsonFilePostRepository implements PostRepository {
         if(!file.exists()){ return new ArrayList<>(); }
 
         try (Reader reader = new BufferedReader(new FileReader(file))){
-            Type listType = new TypeToken<ArrayList<Subreddit>>(){}.getType();
+            Type listType = new TypeToken<ArrayList<Post>>(){}.getType();
             List<Post> posts = gson.fromJson(reader,listType);
             if(posts.isEmpty()){ return new ArrayList<>(); }
             else { return posts; }
         } catch (IOException e){
-            LogManager.getInstance().log("Failed to load subreddits: " + e.getMessage());
+            LogManager.getInstance().log("Failed to load posts: " + e.getMessage());
             return new ArrayList<>();
 
         }
