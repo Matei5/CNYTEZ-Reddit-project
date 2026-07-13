@@ -4,9 +4,7 @@ import model.Comment;
 import model.User;
 import repository.CommentRepository;
 import repository.InMemoryCommentRepository;
-import repository.InMemoryPostRepository;
 import repository.InMemoryUserRepository;
-import repository.PostRepository;
 import repository.UserRepository;
 import service.AuthService;
 import service.CommentService;
@@ -23,7 +21,6 @@ public class CommentController {
     private final ConsolePrinter consolePrinter;
     private final CommentService commentService;
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final AuthService authService;
 
@@ -32,7 +29,6 @@ public class CommentController {
         this.consolePrinter = ConsolePrinter.getInstance();
         this.commentService = CommentService.getInstance();
         this.commentRepository = InMemoryCommentRepository.getInstance();
-        this.postRepository = InMemoryPostRepository.getInstance();
         this.userRepository = InMemoryUserRepository.getInstance();
         this.authService = AuthService.getInstance();
     }
@@ -48,20 +44,9 @@ public class CommentController {
         consolePrinter.printHeader("Create comment");
 
         int postId = consoleReader.readInt("Parent post id: ");
-
-        if (postRepository.findById(postId) == null) {
-            consolePrinter.printMessage("Post not found.");
-            return;
-        }
-
         int parentCommentId = consoleReader.readInt(
                 "Parent comment id (0 for a direct post comment): "
         );
-
-        if (parentCommentId != 0 && commentRepository.findById(parentCommentId) == null) {
-            consolePrinter.printMessage("Parent comment not found.");
-            return;
-        }
 
         String title = consoleReader.readText("Title: ");
         String text = consoleReader.readText("Text: ");
@@ -75,21 +60,11 @@ public class CommentController {
                 image
         );
 
-        if (!success) {
-            consolePrinter.printMessage("Could not create comment.");
-            return;
+        if (success) {
+            consolePrinter.printMessage("Comment created.");
+        } else {
+            consolePrinter.printMessage("Could not create comment. Make sure the ids are correct");
         }
-
-        Comment createdComment = getLastComment();
-
-        if (createdComment != null && parentCommentId != 0) {
-            Comment parentComment = commentRepository.findById(parentCommentId);
-            if (parentComment != null) {
-                parentComment.addChildCommentID(createdComment.getID());
-            }
-        }
-
-        consolePrinter.printMessage("Comment created.");
     }
 
     public void listComments() {
@@ -128,26 +103,13 @@ public class CommentController {
         consolePrinter.printHeader("Delete comment");
 
         int commentId = consoleReader.readInt("Comment id: ");
-        Comment comment = commentRepository.findById(commentId);
-
-        if (comment == null) {
-            consolePrinter.printMessage("Comment not found.");
-            return;
-        }
-
-        if (!isCurrentUserOwner(comment.getOwnerID())) {
-            consolePrinter.printMessage("You can only delete your own comments.");
-            return;
-        }
-
-        removeCommentFromParent(comment);
 
         boolean success = commentService.deleteComment(commentId);
 
         if (success) {
             consolePrinter.printMessage("Comment deleted.");
         } else {
-            consolePrinter.printMessage("Could not delete comment.");
+            consolePrinter.printMessage("Could not delete comment. It may not exist or you are not the owner");
         }
     }
 
@@ -155,11 +117,6 @@ public class CommentController {
         consolePrinter.printHeader("Vote comment");
 
         int commentId = consoleReader.readInt("Comment id: ");
-
-        if (commentRepository.findById(commentId) == null) {
-            consolePrinter.printMessage("Comment not found.");
-            return;
-        }
 
         consolePrinter.printVoteMenu();
         String choice = consoleReader.readText();
@@ -203,17 +160,5 @@ public class CommentController {
             return null;
         }
         return comments.get(comments.size() - 1);
-    }
-
-    private void removeCommentFromParent(Comment comment) {
-        int parentCommentId = comment.getParentCommentID();
-        if (parentCommentId == 0) {
-            return;
-        }
-
-        Comment parentComment = commentRepository.findById(parentCommentId);
-        if (parentComment != null) {
-            parentComment.removeChildCommentID(comment.getID());
-        }
     }
 }

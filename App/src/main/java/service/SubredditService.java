@@ -87,7 +87,7 @@ public class SubredditService {
             return false;
         }
 
-        User newOwner = UserRepository.getInstance().findByUsername(username);
+        User newOwner = userRepository.findByUsername(username);
         if (newOwner == null) {
             LogManager.getInstance().log(
                 "Change owner of subreddit failed! User with id " + loggedUser.getId() +
