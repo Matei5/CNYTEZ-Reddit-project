@@ -1,5 +1,6 @@
 package service;
 
+import log.LogManager;
 import model.Post;
 import model.User;
 import repository.InMemoryPostRepository;
@@ -35,15 +36,52 @@ public class PostService {
         postRepository.addPost(post);
 
         currentId++;
+
+        LogManager.getInstance().log(
+            "Create post success! User with id " + loggedUser.getId() +
+            " created post with id " + post.getId() + " for subreddit with id " + subredditId
+        );
     }
 
     public boolean deletePost(int id) {
-        return postRepository.deleteById(id);
+        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        if (loggedUser == null) {
+            LogManager.getInstance().log("Delete post failed! No user was logged in");
+
+            return false;
+        }
+
+        boolean deleted = postRepository.deleteById(id);
+
+        if (!deleted) {
+            LogManager.getInstance().log(
+                "Create post failed! User with id " + loggedUser.getId() +
+                " tried to delete post with id " + id + " that doesn't exist"
+            );
+        } else {
+            LogManager.getInstance().log(
+                "Create post success! User with id " + loggedUser.getId() + " deleted post with id " + id
+            );
+        }
+
+        return deleted;
     }
 
     public boolean editPost(int id, String newTitle, String newText, String newImage) {
+        User loggedUser = AuthService.getInstance().getLoggedInUser();
+        if (loggedUser == null) {
+            LogManager.getInstance().log("Edit post failed! No user was logged in");
+
+            return false;
+        }
+
         Post post = postRepository.findById(id);
         if (post == null) {
+            LogManager.getInstance().log(
+                "Edit post failed! User with id " + loggedUser.getId() +
+                " tried to edit post with id " + id + " that doesn't exist"
+            );
+
             return false;
         }
 
@@ -51,19 +89,39 @@ public class PostService {
         post.setText(newText);
         post.setImage(newImage);
 
+        LogManager.getInstance().log(
+            "Edit post success! User with id " + loggedUser.getId() + " edited post with id " + id
+        );
+
         return true;
     }
 
     public boolean votePost(int id, Post.VoteType voteType) {
         User loggedUser = AuthService.getInstance().getLoggedInUser();
+        if (loggedUser == null) {
+            LogManager.getInstance().log("Vote post failed! No user was logged in");
+
+            return false;
+        }
+
         int userId = loggedUser.getId();
 
         Post post = postRepository.findById(id);
         if (post == null) {
+            LogManager.getInstance().log(
+                "Vote post failed! User with id " + loggedUser.getId() +
+                " tried to vote post with id " + id + " that doesn't exist"
+            );
+
             return false;
         }
 
         post.vote(userId, voteType);
+
+        LogManager.getInstance().log(
+            "Vote post success! User with id " + loggedUser.getId() +
+            " voted post with id " + id
+        );
 
         return true;
     }

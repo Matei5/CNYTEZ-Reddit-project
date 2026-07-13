@@ -1,5 +1,6 @@
 package service;
 
+import log.LogManager;
 import model.Comment;
 import model.Post;
 import model.User;
@@ -37,10 +38,14 @@ public class UserService {
         User user = userRepository.findById(userId);
 
         if (user == null) {
+            LogManager.getInstance().log("Delete user failed! User with id" + userId + " doesn't exist");
+
             return false;
         }
 
         userRepository.deleteById(userId);
+        LogManager.getInstance().log("Delete user succes! User with id" + userId + " deleted");
+
         return true;
     }
 
