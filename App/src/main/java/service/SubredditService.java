@@ -19,7 +19,8 @@ public class SubredditService {
         this.subRepository = subRepository;
         this.userRepository = userRepository;
         this.authService = authService;
-        this.nextSubredditId = 1;
+        this.nextSubredditId = subRepository.getAllSubreddits().stream()
+                .mapToInt(Subreddit::getId).max().orElse(0) + 1;
     }
 
     public boolean createSubreddit(String name, String photo, String banner) {
@@ -133,7 +134,7 @@ public class SubredditService {
         } else subRepository.update(sub);
 
         LogManager.getInstance().log(
-            "Join subreddit success! User with id " + loggedUser.getId() + " joined subreddit with id" + id
+            "Join subreddit success! User with id " + loggedUser.getId() + " joined subreddit with id " + id
         );
 
         return true;
@@ -150,7 +151,7 @@ public class SubredditService {
         Subreddit sub = subRepository.getSubredditById(id);
         if (sub == null) {
             LogManager.getInstance().log(
-                "Join subreddit failed! User with id " + loggedUser.getId() +
+                "Leave subreddit failed! User with id " + loggedUser.getId() +
                 " tried to leave subreddit with id " + id + " that doesn't exist"
             );
 

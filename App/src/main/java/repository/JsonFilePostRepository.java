@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken;
 
 import model.Post;
 import log.LogManager;
-import model.Subreddit;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -44,8 +43,7 @@ public class JsonFilePostRepository implements PostRepository {
         try (Reader reader = new BufferedReader(new FileReader(file))){
             Type listType = new TypeToken<ArrayList<Post>>(){}.getType();
             List<Post> posts = gson.fromJson(reader,listType);
-            if(posts.isEmpty()){ return new ArrayList<>(); }
-            else { return posts; }
+            return posts != null ? posts : new ArrayList<>();
         } catch (IOException e){
             LogManager.getInstance().log("Failed to load posts: " + e.getMessage());
             return new ArrayList<>();
@@ -60,7 +58,7 @@ public class JsonFilePostRepository implements PostRepository {
         try (Writer writer = new BufferedWriter(new FileWriter(file))){
             gson.toJson(posts, writer);
         } catch (IOException e){
-            LogManager.getInstance().log("Failed to save subreddits: " + e.getMessage());
+            LogManager.getInstance().log("Failed to save posts: " + e.getMessage());
         }
     }
 

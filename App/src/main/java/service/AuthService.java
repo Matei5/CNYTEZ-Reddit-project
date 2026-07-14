@@ -12,7 +12,8 @@ public class AuthService {
 
     public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.nextUserId = 1;
+        this.nextUserId = userRepository.findAll().stream()
+                .mapToInt(User::getId).max().orElse(0) + 1;
         this.currentUser = null;
     }
     public boolean register(String name, String username, String email, String password) {

@@ -5,10 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import model.Post;
 import log.LogManager;
 import model.Comment;
-import model.Subreddit;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -44,10 +42,9 @@ public class JsonFileCommentRepository implements CommentRepository {
         try (Reader reader = new BufferedReader(new FileReader(file))){
             Type listType = new TypeToken<ArrayList<Comment>>(){}.getType();
             List<Comment> comments = gson.fromJson(reader,listType);
-            if(comments.isEmpty()){ return new ArrayList<>(); }
-            else { return comments; }
+            return comments != null ? comments : new ArrayList<>();
         } catch (IOException e){
-            LogManager.getInstance().log("Failed to load subreddits: " + e.getMessage());
+            LogManager.getInstance().log("Failed to load comments: " + e.getMessage());
             return new ArrayList<>();
 
         }
@@ -73,7 +70,7 @@ public class JsonFileCommentRepository implements CommentRepository {
     @Override
     public void removeById(int id) {
         boolean removed = comments.removeIf(comment -> comment.getID() == id);
-        if (removed) saveToFile();;
+        if (removed) saveToFile();
     }
 
     @Override

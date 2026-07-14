@@ -44,8 +44,7 @@ public class JsonFileSubredditRepository implements SubredditRepository {
         try (Reader reader = new BufferedReader(new FileReader(file))){
             Type listType = new TypeToken<ArrayList<Subreddit>>(){}.getType();
             List<Subreddit> subreddits = gson.fromJson(reader,listType);
-            if(subreddits.isEmpty()){ return new ArrayList<>(); }
-            else { return subreddits; }
+            return subreddits != null ? subreddits : new ArrayList<>();
         } catch (IOException e){
             LogManager.getInstance().log("Failed to load subreddits: " + e.getMessage());
             return new ArrayList<>();

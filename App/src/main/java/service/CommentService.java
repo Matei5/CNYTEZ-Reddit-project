@@ -17,7 +17,8 @@ public class CommentService {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.authService = authService;
-        this.currentId = 1;
+        this.currentId = commentRepository.getComments().stream()
+                .mapToInt(Comment::getID).max().orElse(0) + 1;
     }
 
     public boolean createComment(int parentPostID, int parentCommentID,

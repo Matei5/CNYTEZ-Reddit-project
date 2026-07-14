@@ -29,13 +29,13 @@ public class UserService {
         User user = userRepository.findById(userId);
 
         if (user == null) {
-            LogManager.getInstance().log("Delete user failed! User with id" + userId + " doesn't exist");
+            LogManager.getInstance().log("Delete user failed! User with id " + userId + " doesn't exist");
 
             return false;
         }
 
         userRepository.deleteById(userId);
-        LogManager.getInstance().log("Delete user success! User with id" + userId + " deleted");
+        LogManager.getInstance().log("Delete user success! User with id " + userId + " deleted");
 
         return true;
     }

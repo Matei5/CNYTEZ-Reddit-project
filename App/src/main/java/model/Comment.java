@@ -111,7 +111,7 @@ public class Comment {
     }
 
     public void removeChildCommentID(int childCommentID) {
-        this.childCommentIDs.remove(childCommentID);
+        this.childCommentIDs.remove(Integer.valueOf(childCommentID));
     }
 
     public void vote(int userID, VoteType voteType) {
