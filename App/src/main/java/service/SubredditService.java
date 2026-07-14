@@ -134,7 +134,7 @@ public class SubredditService {
         } else subRepository.update(sub);
 
         LogManager.getInstance().log(
-            "Join subreddit success! User with id " + loggedUser.getId() + " joined subreddit with id" + id
+            "Join subreddit success! User with id " + loggedUser.getId() + " joined subreddit with id " + id
         );
 
         return true;
