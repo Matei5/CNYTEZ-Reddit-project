@@ -57,6 +57,7 @@ public class CommentService {
         if (parentCommentID != 0) {
             Comment parentComment = commentRepository.findById(parentCommentID);
             parentComment.addChildCommentID(comment.getID());
+            commentRepository.update(parentComment);
         }
         LogManager.getInstance().log(
             "Create comment success! User with id " + loggedUser.getId() +
@@ -97,6 +98,7 @@ public class CommentService {
 
         if (parentComment != null) {
             parentComment.removeChildCommentID(comment.getID());
+            commentRepository.update(parentComment);
         }
 
         commentRepository.removeById(id);

@@ -95,6 +95,8 @@ public class SubredditService {
 
         sub.setOwnerId(newOwner.getId());
         sub.addFollower(newOwner.getId());
+        subRepository.update(sub);
+
         LogManager.getInstance().log(
             "Change owner of subreddit success! User with id " + loggedUser.getId() +
             " changed the owner of the subreddit with id " + id + " to a user with username " + username
