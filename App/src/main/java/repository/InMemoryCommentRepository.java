@@ -58,4 +58,6 @@ public class InMemoryCommentRepository implements CommentRepository {
 
         return userComments;
     }
+
+    public void update(Comment comment) {}
 }

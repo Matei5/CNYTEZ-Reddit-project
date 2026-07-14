@@ -95,6 +95,8 @@ public class SubredditService {
 
         sub.setOwnerId(newOwner.getId());
         sub.addFollower(newOwner.getId());
+        subRepository.update(sub);
+
         LogManager.getInstance().log(
             "Change owner of subreddit success! User with id " + loggedUser.getId() +
             " changed the owner of the subreddit with id " + id + " to a user with username " + username
@@ -128,7 +130,7 @@ public class SubredditService {
             );
 
             return false;
-        }
+        } else subRepository.update(sub);
 
         LogManager.getInstance().log(
             "Join subreddit success! User with id " + loggedUser.getId() + " joined subreddit with id" + id
@@ -172,7 +174,7 @@ public class SubredditService {
             );
 
             return false;
-        }
+        } else  subRepository.update(sub);
 
         LogManager.getInstance().log(
             "Leave subreddit success! The user with id " + loggedUser.getId() + " left subreddit with id " + id
@@ -209,6 +211,8 @@ public class SubredditService {
         }
 
         sub.setPhoto(photo);
+        subRepository.update(sub);
+
         LogManager.getInstance().log(
             "Change photo of subreddit success! User with id " + loggedUser.getId() +
             " changed photo of subreddit with id " + id
@@ -245,6 +249,8 @@ public class SubredditService {
         }
 
         sub.setBanner(banner);
+        subRepository.update(sub);
+
         LogManager.getInstance().log(
             "Change banner of subreddit success! User with id " + loggedUser.getId() +
             " changed banner of subreddit with id " + id

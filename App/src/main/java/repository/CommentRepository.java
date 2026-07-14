@@ -14,4 +14,6 @@ public interface CommentRepository {
     Comment findById(int id);
 
     List<Comment> getCommentsByUser(int userId);
+
+    void update(Comment comment);
 }

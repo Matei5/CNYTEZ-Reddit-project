@@ -15,4 +15,6 @@ public interface UserRepository {
     List<User> findAll();
 
     void deleteById(int id);
+
+    void update(User user);
 }

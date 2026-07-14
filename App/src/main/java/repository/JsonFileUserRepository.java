@@ -109,4 +109,8 @@ public class JsonFileUserRepository implements UserRepository {
         users.removeIf(user -> user.getId() == id);
         saveToFile();
     }
+
+    public void update(User user) {
+        saveToFile();
+    }
 }
