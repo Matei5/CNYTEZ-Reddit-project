@@ -13,7 +13,7 @@ public class AuthService {
     public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
         this.nextUserId = userRepository.findAll().stream()
-                .mapToInt(User::getId).max().orElse(0) + 1;;
+                .mapToInt(User::getId).max().orElse(0) + 1;
         this.currentUser = null;
     }
     public boolean register(String name, String username, String email, String password) {

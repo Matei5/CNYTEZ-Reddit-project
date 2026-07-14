@@ -20,7 +20,7 @@ public class SubredditService {
         this.userRepository = userRepository;
         this.authService = authService;
         this.nextSubredditId = subRepository.getAllSubreddits().stream()
-                .mapToInt(Subreddit::getId).max().orElse(0) + 1;;
+                .mapToInt(Subreddit::getId).max().orElse(0) + 1;
     }
 
     public boolean createSubreddit(String name, String photo, String banner) {
