@@ -18,7 +18,8 @@ public class PostService {
         this.postRepository = postRepository;
         this.subredditRepository = subredditRepository;
         this.authService = authService;
-        this.currentId = 1;
+        this.currentId = postRepository.getAllPosts().stream()
+                .mapToInt(Post::getId).max().orElse(0) + 1;;
     }
 
 

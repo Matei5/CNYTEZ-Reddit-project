@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken;
 
 import model.Post;
 import log.LogManager;
-import model.Subreddit;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -60,7 +59,7 @@ public class JsonFilePostRepository implements PostRepository {
         try (Writer writer = new BufferedWriter(new FileWriter(file))){
             gson.toJson(posts, writer);
         } catch (IOException e){
-            LogManager.getInstance().log("Failed to save subreddits: " + e.getMessage());
+            LogManager.getInstance().log("Failed to save posts: " + e.getMessage());
         }
     }
 

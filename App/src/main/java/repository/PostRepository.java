@@ -1,7 +1,6 @@
 package repository;
 
 import model.Post;
-import model.User;
 
 import java.util.List;
 
