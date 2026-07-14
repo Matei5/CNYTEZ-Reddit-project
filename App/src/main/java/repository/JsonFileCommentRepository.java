@@ -42,8 +42,7 @@ public class JsonFileCommentRepository implements CommentRepository {
         try (Reader reader = new BufferedReader(new FileReader(file))){
             Type listType = new TypeToken<ArrayList<Comment>>(){}.getType();
             List<Comment> comments = gson.fromJson(reader,listType);
-            if(comments.isEmpty()){ return new ArrayList<>(); }
-            else { return comments; }
+            return comments != null ? comments : new ArrayList<>();
         } catch (IOException e){
             LogManager.getInstance().log("Failed to load comments: " + e.getMessage());
             return new ArrayList<>();

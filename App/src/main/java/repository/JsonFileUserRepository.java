@@ -40,8 +40,7 @@ public class JsonFileUserRepository implements UserRepository {
         try (Reader reader = new BufferedReader(new FileReader(file))){
             Type listType = new TypeToken<ArrayList<User>>(){}.getType();
             List<User> users = gson.fromJson(reader,listType);
-            if(users.isEmpty()){ return new ArrayList<>(); }
-            else { return users; }
+            return users != null ? users : new ArrayList<>();
         } catch (IOException e){
             LogManager.getInstance().log("Failed to load users: " + e.getMessage());
             return new ArrayList<>();

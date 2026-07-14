@@ -43,8 +43,7 @@ public class JsonFilePostRepository implements PostRepository {
         try (Reader reader = new BufferedReader(new FileReader(file))){
             Type listType = new TypeToken<ArrayList<Post>>(){}.getType();
             List<Post> posts = gson.fromJson(reader,listType);
-            if(posts.isEmpty()){ return new ArrayList<>(); }
-            else { return posts; }
+            return posts != null ? posts : new ArrayList<>();
         } catch (IOException e){
             LogManager.getInstance().log("Failed to load posts: " + e.getMessage());
             return new ArrayList<>();
