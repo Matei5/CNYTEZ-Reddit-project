@@ -151,7 +151,7 @@ public class SubredditService {
         Subreddit sub = subRepository.getSubredditById(id);
         if (sub == null) {
             LogManager.getInstance().log(
-                "Join subreddit failed! User with id " + loggedUser.getId() +
+                "Leave subreddit failed! User with id " + loggedUser.getId() +
                 " tried to leave subreddit with id " + id + " that doesn't exist"
             );
 
